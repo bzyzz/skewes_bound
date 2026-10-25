@@ -1,7 +1,7 @@
 # A two-scale compactly supported kernel for Lehman's method
 
 Certified computations, in Arb ball arithmetic, for:
-- upper bounds on **Skewes's number** $\Xi := \min\{x \ge 2 : \pi(x) > \operatorname{li}(x)\}$;
+- upper bounds on **Skewes's number** $\Xi := \min\{x \ge 2 : \pi(x) > \mathrm{li}(x)\}$;
 - the first sign change of $\theta(x) - x$;
 - the **prime number race** $\pi(x;24,11) - \pi(x;24,1)$.
 
@@ -17,7 +17,7 @@ This decouples the window half-width $\eta_0$ from the zero cutoff $T_0$. We wor
 
 | Result | Statement | Zeros used | Status |
 |---|---|---|---|
-| Skewes, main theorem | $\pi(x) > \operatorname{li}(x)$ for some $x \in [e^{727.951335292}, e^{727.951335596}]$, so $\Xi < e^{727.951335596}$ | 195,565,267 ($T_0 = 8\cdot 10^7$) | certified in Arb |
+| Skewes, main theorem | $\pi(x) > \mathrm{li}(x)$ for some $x \in [e^{727.951335292}, e^{727.951335596}]$, so $\Xi < e^{727.951335596}$ | 195,565,267 ($T_0 = 8\cdot 10^7$) | certified in Arb |
 | $\theta(x) - x$ | $\theta(x) > x$ for some $x \in [e^{727.9513323698}, e^{727.9513328538}]$ | 118,488,123 ($T_0 = 5\cdot 10^7$) | certified in Arb |
 | Prime race mod 24 | $\pi(x;24,11) < \pi(x;24,1)$ for some $x$ with $\log x \in [111.5456338, 111.5460262]$, so the first sign change is $< 10^{48.4439}$ | 675,495 zeros of four Dirichlet $L$-functions ($T_0 = 10^5$) | certified in Arb |
 | Smith (2016), RH removed | $\Xi < e^{727.951335402030}$ | Platt's sum over $1.04\cdot 10^{11}$ zeros | **conditional** on one tabulated value in Smith's MSc thesis |
@@ -31,7 +31,7 @@ This decouples the window half-width $\eta_0$ from the zero cutoff $T_0$. We wor
 - Every zero below $T_0 = 8\cdot10^7$ is isolated with Arb:
   - $n \le 13{,}955{,}181$ from the Arb zero caches;
   - the rest re-isolated with `acb_dirichlet_zeta_zeros` by `certification/arb_recert.py`, about 15 hours on 64 cores.
-- The Arb-only certificates are `certification/s_cert*_arb.json`. With them the envelope margin is $I(\omega,\eta_0) \ge 2.32\cdot 10^{-5}$, giving more than $2.75\cdot 10^{153}$ consecutive integers with $\pi(x) > \operatorname{li}(x)$.
+- The Arb-only certificates are `certification/s_cert*_arb.json`. With them the envelope margin is $I(\omega,\eta_0) \ge 2.32\cdot 10^{-5}$, giving more than $2.75\cdot 10^{153}$ consecutive integers with $\pi(x) > \mathrm{li}(x)$.
 - The certificates without the `_arb` suffix used floating-point Riemann–Siegel brackets (`fast_cert_zeros.hpp`) above $6.8\cdot 10^6$. They are kept for comparison and give the same bounds with slightly smaller margins.
 
 **Prime race.** See [`race/README.md`](race/README.md).

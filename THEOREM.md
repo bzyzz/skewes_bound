@@ -2,7 +2,7 @@
 
 This file summarises what is proved, what each proof relies on, and where every number comes from. Each input is marked **[cited]** (published source), **[derived]** (proved in the accompanying manuscript, in preparation; the proofs are outlined here) or **[computed]** (by a script in [`certification/`](certification/)). The prime-race result has its own file, [`race/THEOREM.md`](race/THEOREM.md).
 
-Notation: $\Xi := \min\{x \ge 2 : \pi(x) > \operatorname{li}(x)\}$; nontrivial zeros of $\zeta(s)$ are $\rho = \beta + i\gamma$; $A = 3\cdot 10^{12}$.
+Notation: $\Xi := \min\{x \ge 2 : \pi(x) > \mathrm{li}(x)\}$; nontrivial zeros of $\zeta(s)$ are $\rho = \beta + i\gamma$; $A = 3\cdot 10^{12}$.
 
 ## Status
 
@@ -17,7 +17,7 @@ Notation: $\Xi := \min\{x \ge 2 : \pi(x) > \operatorname{li}(x)\}$; nontrivial z
 
 $$K = K_{\mathrm{core}} * \psi_\delta, \qquad K_{\mathrm{core}}(y) = \frac{1}{\eta_1}\sum_{m=1}^{3}\lambda_m \kappa_{2m}\!\left(\frac{y}{\eta_1}\right), \qquad \psi_\delta(y) = \frac{1}{\delta}\kappa_{2M}\!\left(\frac{y}{\delta}\right),$$
 
-with $\kappa_{2m}(x) = C_m\cos^{2m}(\pi x/2)\mathbf{1}_{[-1,1]}(x)$, $C_m = 4^m(m!)^2/(2(2m)!)$. Then $K \ge 0$, $\operatorname{supp} K = [-\eta_0, \eta_0]$ with $\eta_0 = \eta_1 + \delta$, $\int K = 1$, and $\hat K(\gamma) = \hat\kappa_{\mathrm{core}}(\eta_1\gamma)\,\hat\kappa_{2M}(\delta\gamma)$ with
+with $\kappa_{2m}(x) = C_m\cos^{2m}(\pi x/2)\mathbf{1}_{[-1,1]}(x)$, $C_m = 4^m(m!)^2/(2(2m)!)$. Then $K \ge 0$, $\mathrm{supp} K = [-\eta_0, \eta_0]$ with $\eta_0 = \eta_1 + \delta$, $\int K = 1$, and $\hat K(\gamma) = \hat\kappa_{\mathrm{core}}(\eta_1\gamma)\,\hat\kappa_{2M}(\delta\gamma)$ with
 $\hat\kappa_{2m}(\xi) = \frac{\sin\xi}{\xi}\prod_{k=1}^m \frac{(k\pi)^2}{(k\pi)^2 - \xi^2}$.
 
 - Compact support with unit mass: no truncation error and no exterior tail.
@@ -27,17 +27,17 @@ $\hat\kappa_{2m}(\xi) = \frac{\sin\xi}{\xi}\prod_{k=1}^m \frac{(k\pi)^2}{(k\pi)^
 
 For comparison, the truncated Gaussian of Lehman's theorem and its refinements needs $2A/\alpha \le \eta$ and $A^2/(2\alpha) > \omega/2 + O(\log A)$, so $\eta\sqrt\alpha \gtrsim 55$ before trimming. In practice $\eta_0 T_0 = 114$–$136$ (Saouter–Demichel 2010; Saouter–Trudgian–Demichel 2015). Logan-type compact kernels (Büthe 2016, 2018) control the high zeros by $1/\sinh c$ with $c \gtrsim \omega/2$, giving $\eta_0 T_0 \approx 70$ at our window.
 
-## 2. Criterion for $\pi(x) - \operatorname{li}(x)$ [derived]
+## 2. Criterion for $\pi(x) - \mathrm{li}(x)$ [derived]
 
 With $\Phi(u) = 1 + 2/u + 8/u^2 + 58.56/u^3$,
 
-$$I(\omega, \eta_0) := \int_{\omega-\eta_0}^{\omega+\eta_0} K(u-\omega)\,\frac{u\{\pi(e^u) - \operatorname{li}(e^u)\}}{e^{u/2}\Phi(u)}\,\mathrm{d}u \;\ge\; J_K(\omega, T_0) - (R_2 + R_3 + R_4 + R_5),$$
+$$I(\omega, \eta_0) := \int_{\omega-\eta_0}^{\omega+\eta_0} K(u-\omega)\,\frac{u\{\pi(e^u) - \mathrm{li}(e^u)\}}{e^{u/2}\Phi(u)}\,\mathrm{d}u \;\ge\; J_K(\omega, T_0) - (R_2 + R_3 + R_4 + R_5),$$
 
 $$J_K = -1 + \frac{S_K}{\Phi(\omega)}, \qquad S_K(\omega, T_0) = -\sum_{0 < |\gamma| \le T_0}\hat K(\gamma)\,e^{i\gamma\omega}\left(\frac{1}{\rho} + \frac{1}{\rho^2\omega}\right).$$
 
 The error terms are implemented in `certification/error_bounds.py`:
 - $R_2$: prime powers and $\log 2$;
-- $R_3$: $u$-variation and the $\operatorname{li}$ remainder;
+- $R_3$: $u$-variation and the $\mathrm{li}$ remainder;
 - $R_4$: on-line zeros $T_0 < |\gamma| \le A$, either the direct envelope from Lehman's Lemma 1 or the Stieltjes refinement;
 - $R_5$: zeros with $|\gamma| > A$.
 
