@@ -1,0 +1,115 @@
+race 8;3,1 c0=4: coarse JP T=2000: global min -0.738 at u=158.651; 340 candidate blocks below 1.0 [13s]
+   neg region {'u_coarse': 43.36575, 'Ecoarse': 0.13637, 'Efull': -0.18589, 'u_full': 43.3663, 'Ejp': -0.08001, 'u_jp': 43.36628}
+   neg region {'u_coarse': 54.91994, 'Ecoarse': 0.07195, 'Efull': -0.12521, 'u_full': 54.91403, 'Ejp': -0.08591, 'u_jp': 54.91413}
+   neg region {'u_coarse': 54.93125, 'Ecoarse': -0.00476, 'Efull': -0.2886, 'u_full': 54.94271, 'Ejp': -0.1834, 'u_jp': 54.94268}
+   neg region {'u_coarse': 100.94919, 'Ecoarse': 0.19389, 'Efull': -0.1011, 'u_full': 100.94893, 'Ejp': -0.03086, 'u_jp': 100.94887}
+   neg region {'u_coarse': 140.6155, 'Ecoarse': -0.21569, 'Efull': -0.43502, 'u_full': 140.61634, 'Ejp': -0.35541, 'u_jp': 140.61441}
+   neg region {'u_coarse': 156.28094, 'Ecoarse': 0.3145, 'Efull': -0.05329, 'u_full': 156.28062, 'Ejp': -0.00833, 'u_jp': 156.281}
+   neg region {'u_coarse': 158.65062, 'Ecoarse': -0.73817, 'Efull': -1.02121, 'u_full': 158.64257, 'Ejp': -0.93107, 'u_jp': 158.65386}
+   neg region {'u_coarse': 191.79094, 'Ecoarse': -0.32151, 'Efull': -0.65578, 'u_full': 191.79218, 'Ejp': -0.62258, 'u_jp': 191.79217}
+   first full-weight T=2e4 negative: {'u_coarse': 43.36575, 'Ecoarse': 0.1363726785683351, 'Efull': -0.18588674828968763, 'u_full': 43.366305, 'Ejp': -0.08000771163595292, 'u_jp': 43.366285}
+   first JP T=2e4 negative:          {'u_coarse': 43.36575, 'Ecoarse': 0.1363726785683351, 'Efull': -0.18588674828968763, 'u_full': 43.366305, 'Ejp': -0.08000771163595292, 'u_jp': 43.366285}
+     {'u_coarse': 20.19644, 'Ecoarse': 0.92805, 'Efull': 0.54781, 'u_full': 20.19674, 'Ejp': 0.58171, 'u_jp': 20.19665}
+     {'u_coarse': 23.66231, 'Ecoarse': 0.77574, 'Efull': 0.41891, 'u_full': 23.66297, 'Ejp': 0.49997, 'u_jp': 23.66298}
+     {'u_coarse': 27.91194, 'Ecoarse': 0.7588, 'Efull': 0.30337, 'u_full': 27.91277, 'Ejp': 0.38511, 'u_jp': 27.91276}
+     {'u_coarse': 27.91269, 'Ecoarse': 0.74397, 'Efull': 0.30337, 'u_full': 27.91277, 'Ejp': 0.38511, 'u_jp': 27.91276}
+     {'u_coarse': 34.17813, 'Ecoarse': 0.73981, 'Efull': 0.47812, 'u_full': 34.18427, 'Ejp': 0.58627, 'u_jp': 34.18427}
+     {'u_coarse': 34.20444, 'Ecoarse': 0.66241, 'Efull': 0.37598, 'u_full': 34.20462, 'Ejp': 0.42322, 'u_jp': 34.20462}
+     {'u_coarse': 35.33594, 'Ecoarse': 0.92055, 'Efull': 0.53682, 'u_full': 35.33738, 'Ejp': 0.59178, 'u_jp': 35.33735}
+     {'u_coarse': 35.33725, 'Ecoarse': 0.86021, 'Efull': 0.53682, 'u_full': 35.33738, 'Ejp': 0.59178, 'u_jp': 35.33735}
+     {'u_coarse': 38.296, 'Ecoarse': 0.46928, 'Efull': 0.20991, 'u_full': 38.29745, 'Ejp': 0.23226, 'u_jp': 38.29715}
+     {'u_coarse': 43.36575, 'Ecoarse': 0.13637, 'Efull': -0.18589, 'u_full': 43.3663, 'Ejp': -0.08001, 'u_jp': 43.36628}
+     {'u_coarse': 43.4, 'Ecoarse': 0.92724, 'Efull': 0.50971, 'u_full': 43.39883, 'Ejp': 0.59688, 'u_jp': 43.3988}
+     {'u_coarse': 44.46106, 'Ecoarse': 0.94957, 'Efull': 0.64113, 'u_full': 44.46178, 'Ejp': 0.67771, 'u_jp': 44.46189}
+race 8;7,1 c0=4: coarse JP T=2000: global min -1.015 at u=254.412; 553 candidate blocks below 1.0 [12s]
+   neg region {'u_coarse': 32.89225, 'Ecoarse': 0.2135, 'Efull': -0.05438, 'u_full': 32.89299, 'Ejp': 0.00129, 'u_jp': 32.89289}
+   neg region {'u_coarse': 41.51812, 'Ecoarse': 0.19455, 'Efull': -0.09341, 'u_full': 41.51847, 'Ejp': -0.01235, 'u_jp': 41.51752}
+   neg region {'u_coarse': 45.35519, 'Ecoarse': 0.01485, 'Efull': -0.41128, 'u_full': 45.34992, 'Ejp': -0.30456, 'u_jp': 45.34992}
+   neg region {'u_coarse': 48.82162, 'Ecoarse': -0.50062, 'Efull': -0.85049, 'u_full': 48.79937, 'Ejp': -0.75155, 'u_jp': 48.79939}
+   neg region {'u_coarse': 50.64906, 'Ecoarse': 0.12374, 'Efull': -0.11591, 'u_full': 50.64724, 'Ejp': -0.0109, 'u_jp': 50.64718}
+   neg region {'u_coarse': 94.45262, 'Ecoarse': -0.08783, 'Efull': -0.28449, 'u_full': 94.45306, 'Ejp': -0.24055, 'u_jp': 94.4531}
+   neg region {'u_coarse': 102.96213, 'Ecoarse': -0.49975, 'Efull': -0.70174, 'u_full': 102.9619, 'Ejp': -0.6344, 'u_jp': 102.96189}
+   neg region {'u_coarse': 108.27431, 'Ecoarse': -0.00509, 'Efull': -0.32292, 'u_full': 108.25747, 'Ejp': -0.25318, 'u_jp': 108.25754}
+   first full-weight T=2e4 negative: {'u_coarse': 32.89225, 'Ecoarse': 0.21349951988926924, 'Efull': -0.05437835806127165, 'u_full': 32.89298999999999, 'Ejp': 0.0012895532438770424, 'u_jp': 32.892894999999996}
+   first JP T=2e4 negative:          {'u_coarse': 41.518125, 'Ecoarse': 0.19454836419621502, 'Efull': -0.09341195823677077, 'u_full': 41.51847, 'Ejp': -0.012348677327558752, 'u_jp': 41.517520000000005}
+     {'u_coarse': 25.965, 'Ecoarse': 0.99984, 'Efull': 0.57572, 'u_full': 25.98129, 'Ejp': 0.61485, 'u_jp': 25.98137}
+     {'u_coarse': 26.89613, 'Ecoarse': 0.94348, 'Efull': 0.67003, 'u_full': 26.89725, 'Ejp': 0.75344, 'u_jp': 26.8973}
+     {'u_coarse': 30.98394, 'Ecoarse': 0.7807, 'Efull': 0.37452, 'u_full': 30.98356, 'Ejp': 0.44198, 'u_jp': 30.98349}
+     {'u_coarse': 30.999, 'Ecoarse': 0.68654, 'Efull': 0.37452, 'u_full': 30.98356, 'Ejp': 0.44198, 'u_jp': 30.98349}
+     {'u_coarse': 32.89225, 'Ecoarse': 0.2135, 'Efull': -0.05438, 'u_full': 32.89299, 'Ejp': 0.00129, 'u_jp': 32.89289}
+     {'u_coarse': 38.03688, 'Ecoarse': 0.83562, 'Efull': 0.65395, 'u_full': 38.03747, 'Ejp': 0.72743, 'u_jp': 38.03843}
+     {'u_coarse': 41.43425, 'Ecoarse': 0.83036, 'Efull': 0.62664, 'u_full': 41.43391, 'Ejp': 0.67428, 'u_jp': 41.43395}
+     {'u_coarse': 41.51812, 'Ecoarse': 0.19455, 'Efull': -0.09341, 'u_full': 41.51847, 'Ejp': -0.01235, 'u_jp': 41.51752}
+     {'u_coarse': 45.31413, 'Ecoarse': 0.57691, 'Efull': 0.33013, 'u_full': 45.31501, 'Ejp': 0.37692, 'u_jp': 45.31494}
+     {'u_coarse': 45.35519, 'Ecoarse': 0.01485, 'Efull': -0.41128, 'u_full': 45.34992, 'Ejp': -0.30456, 'u_jp': 45.34992}
+     {'u_coarse': 48.76038, 'Ecoarse': 0.35395, 'Efull': 0.13352, 'u_full': 48.77598, 'Ejp': 0.15829, 'u_jp': 48.77599}
+     {'u_coarse': 48.82162, 'Ecoarse': -0.50062, 'Efull': -0.85049, 'u_full': 48.79937, 'Ejp': -0.75155, 'u_jp': 48.79939}
+race 12;11,1 c0=4: coarse JP T=2000: global min 0.035 at u=818.830; 99 candidate blocks below 1.0 [12s]
+   neg region {'u_coarse': 187.53588, 'Ecoarse': 0.05912, 'Efull': -0.23581, 'u_full': 187.53682, 'Ejp': -0.13909, 'u_jp': 187.53677}
+   neg region {'u_coarse': 191.89119, 'Ecoarse': 0.16124, 'Efull': -0.21181, 'u_full': 191.88994, 'Ejp': -0.15509, 'u_jp': 191.89}
+   neg region {'u_coarse': 254.42312, 'Ecoarse': 0.24826, 'Efull': -0.10629, 'u_full': 254.42277, 'Ejp': -0.07557, 'u_jp': 254.42273}
+   neg region {'u_coarse': 383.59069, 'Ecoarse': 0.08154, 'Efull': -0.16129, 'u_full': 383.5916, 'Ejp': -0.09227, 'u_jp': 383.59162}
+   neg region {'u_coarse': 432.78675, 'Ecoarse': 0.06648, 'Efull': -0.18088, 'u_full': 432.77979, 'Ejp': -0.10553, 'u_jp': 432.77977}
+   neg region {'u_coarse': 444.41331, 'Ecoarse': 0.20407, 'Efull': -0.08616, 'u_full': 444.42025, 'Ejp': -0.03258, 'u_jp': 444.42021}
+   neg region {'u_coarse': 700.85581, 'Ecoarse': 0.23286, 'Efull': -0.04598, 'u_full': 700.8552, 'Ejp': -0.0042, 'u_jp': 700.85525}
+   neg region {'u_coarse': 743.89781, 'Ecoarse': 0.16612, 'Efull': -0.19316, 'u_full': 743.89813, 'Ejp': -0.14469, 'u_jp': 743.89801}
+   first full-weight T=2e4 negative: {'u_coarse': 187.535875, 'Ecoarse': 0.05912082904190269, 'Efull': -0.23581467923948793, 'u_full': 187.53681999999998, 'Ejp': -0.13908604822969295, 'u_jp': 187.53677}
+   first JP T=2e4 negative:          {'u_coarse': 187.535875, 'Ecoarse': 0.05912082904190269, 'Efull': -0.23581467923948793, 'u_full': 187.53681999999998, 'Ejp': -0.13908604822969295, 'u_jp': 187.53677}
+     {'u_coarse': 67.59194, 'Ecoarse': 0.89206, 'Efull': 0.36916, 'u_full': 67.59401, 'Ejp': 0.40764, 'u_jp': 67.59401}
+     {'u_coarse': 67.59387, 'Ecoarse': 0.70816, 'Efull': 0.31244, 'u_full': 67.5941, 'Ejp': 0.40626, 'u_jp': 67.59403}
+     {'u_coarse': 71.77369, 'Ecoarse': 0.95097, 'Efull': 0.52503, 'u_full': 71.77358, 'Ejp': 0.55581, 'u_jp': 71.77368}
+     {'u_coarse': 93.66744, 'Ecoarse': 0.78041, 'Efull': 0.58782, 'u_full': 93.66759, 'Ejp': 0.62828, 'u_jp': 93.6676}
+     {'u_coarse': 131.12825, 'Ecoarse': 0.5274, 'Efull': 0.12006, 'u_full': 131.12832, 'Ejp': 0.16721, 'u_jp': 131.12829}
+     {'u_coarse': 137.28894, 'Ecoarse': 0.79263, 'Efull': 0.53267, 'u_full': 137.28869, 'Ejp': 0.63283, 'u_jp': 137.28993}
+     {'u_coarse': 140.62381, 'Ecoarse': 0.82482, 'Efull': 0.43347, 'u_full': 140.62341, 'Ejp': 0.5101, 'u_jp': 140.62339}
+     {'u_coarse': 148.91056, 'Ecoarse': 0.99054, 'Efull': 0.73528, 'u_full': 148.91156, 'Ejp': 0.80472, 'u_jp': 148.91106}
+     {'u_coarse': 164.74394, 'Ecoarse': 0.51595, 'Efull': 0.24403, 'u_full': 164.73859, 'Ejp': 0.33925, 'u_jp': 164.73861}
+     {'u_coarse': 164.74562, 'Ecoarse': 0.49038, 'Efull': 0.26758, 'u_full': 164.74681, 'Ejp': 0.3533, 'u_jp': 164.74676}
+     {'u_coarse': 174.03963, 'Ecoarse': 0.80069, 'Efull': 0.43597, 'u_full': 174.03941, 'Ejp': 0.52366, 'u_jp': 174.03934}
+     {'u_coarse': 180.23019, 'Ecoarse': 0.53485, 'Efull': 0.20359, 'u_full': 180.22909, 'Ejp': 0.26706, 'u_jp': 180.22912}
+race 12;5,1 c0=4: coarse JP T=2000: global min -1.974 at u=840.059; 452 candidate blocks below 1.0 [13s]
+   neg region {'u_coarse': 39.12894, 'Ecoarse': 0.21264, 'Efull': -0.06057, 'u_full': 39.12821, 'Ejp': -0.01058, 'u_jp': 39.12819}
+   neg region {'u_coarse': 69.006, 'Ecoarse': 0.1895, 'Efull': -0.10615, 'u_full': 69.00559, 'Ejp': -0.03594, 'u_jp': 69.00554}
+   neg region {'u_coarse': 73.93188, 'Ecoarse': 0.19543, 'Efull': -0.05799, 'u_full': 73.93121, 'Ejp': -0.02728, 'u_jp': 73.93114}
+   neg region {'u_coarse': 88.98363, 'Ecoarse': 0.2212, 'Efull': -0.06488, 'u_full': 88.9832, 'Ejp': -0.00488, 'u_jp': 88.98314}
+   neg region {'u_coarse': 102.08469, 'Ecoarse': 0.24641, 'Efull': -0.13804, 'u_full': 102.0847, 'Ejp': -0.10208, 'u_jp': 102.08459}
+   neg region {'u_coarse': 103.73713, 'Ecoarse': -0.14478, 'Efull': -0.35478, 'u_full': 103.73697, 'Ejp': -0.28943, 'u_jp': 103.73692}
+   neg region {'u_coarse': 117.08681, 'Ecoarse': 0.38341, 'Efull': -0.08303, 'u_full': 117.08666, 'Ejp': 0.03771, 'u_jp': 117.08667}
+   neg region {'u_coarse': 119.9765, 'Ecoarse': -0.67955, 'Efull': -1.09438, 'u_full': 119.96991, 'Ejp': -1.00717, 'u_jp': 119.96987}
+   first full-weight T=2e4 negative: {'u_coarse': 39.1289375, 'Ecoarse': 0.21264484767641884, 'Efull': -0.060567259676333605, 'u_full': 39.128215, 'Ejp': -0.010579342626348442, 'u_jp': 39.12819}
+   first JP T=2e4 negative:          {'u_coarse': 39.1289375, 'Ecoarse': 0.21264484767641884, 'Efull': -0.060567259676333605, 'u_full': 39.128215, 'Ejp': -0.010579342626348442, 'u_jp': 39.12819}
+     {'u_coarse': 19.49875, 'Ecoarse': 0.87136, 'Efull': 0.66452, 'u_full': 19.4989, 'Ejp': 0.71369, 'u_jp': 19.49883}
+     {'u_coarse': 27.90044, 'Ecoarse': 0.46022, 'Efull': 0.18781, 'u_full': 27.90045, 'Ejp': 0.24537, 'u_jp': 27.90026}
+     {'u_coarse': 30.87862, 'Ecoarse': 0.33444, 'Efull': 0.0187, 'u_full': 30.87855, 'Ejp': 0.11358, 'u_jp': 30.8792}
+     {'u_coarse': 34.32794, 'Ecoarse': 0.83646, 'Efull': 0.49827, 'u_full': 34.32773, 'Ejp': 0.60625, 'u_jp': 34.32777}
+     {'u_coarse': 35.78781, 'Ecoarse': 0.87549, 'Efull': 0.4786, 'u_full': 35.78706, 'Ejp': 0.531, 'u_jp': 35.78716}
+     {'u_coarse': 39.12894, 'Ecoarse': 0.21264, 'Efull': -0.06057, 'u_full': 39.12821, 'Ejp': -0.01058, 'u_jp': 39.12819}
+     {'u_coarse': 45.81413, 'Ecoarse': 0.7326, 'Efull': 0.46957, 'u_full': 45.81443, 'Ejp': 0.50484, 'u_jp': 45.81447}
+     {'u_coarse': 45.84562, 'Ecoarse': 0.79215, 'Efull': 0.49073, 'u_full': 45.83879, 'Ejp': 0.56442, 'u_jp': 45.83875}
+     {'u_coarse': 54.2735, 'Ecoarse': 0.7271, 'Efull': 0.25865, 'u_full': 54.282, 'Ejp': 0.30272, 'u_jp': 54.282}
+     {'u_coarse': 54.28194, 'Ecoarse': 0.58768, 'Efull': 0.13641, 'u_full': 54.28243, 'Ejp': 0.1693, 'u_jp': 54.28248}
+     {'u_coarse': 60.48631, 'Ecoarse': 0.93275, 'Efull': 0.64339, 'u_full': 60.48648, 'Ejp': 0.72469, 'u_jp': 60.48575}
+     {'u_coarse': 60.75881, 'Ecoarse': 0.36074, 'Efull': 0.06076, 'u_full': 60.75855, 'Ejp': 0.12019, 'u_jp': 60.75861}
+race 12;7,1 c0=4: coarse JP T=2000: global min -1.336 at u=339.632; 548 candidate blocks below 1.0 [13s]
+   neg region {'u_coarse': 30.94613, 'Ecoarse': 0.10182, 'Efull': -0.33243, 'u_full': 30.9461, 'Ejp': -0.26139, 'u_jp': 30.94594}
+   neg region {'u_coarse': 39.12175, 'Ecoarse': -0.39116, 'Efull': -0.86999, 'u_full': 39.12145, 'Ejp': -0.79243, 'u_jp': 39.12145}
+   neg region {'u_coarse': 45.8025, 'Ecoarse': 0.32394, 'Efull': -0.06919, 'u_full': 45.80214, 'Ejp': -0.00439, 'u_jp': 45.80229}
+   neg region {'u_coarse': 45.87831, 'Ecoarse': -0.26392, 'Efull': -0.68583, 'u_full': 45.87798, 'Ejp': -0.60849, 'u_jp': 45.87805}
+   neg region {'u_coarse': 52.0975, 'Ecoarse': 0.31595, 'Efull': -0.055, 'u_full': 52.09883, 'Ejp': 0.07543, 'u_jp': 52.09885}
+   neg region {'u_coarse': 54.12131, 'Ecoarse': -0.23844, 'Efull': -0.49889, 'u_full': 54.12099, 'Ejp': -0.4129, 'u_jp': 54.12099}
+   neg region {'u_coarse': 54.15494, 'Ecoarse': 0.21646, 'Efull': -0.06022, 'u_full': 54.15538, 'Ejp': -0.00056, 'u_jp': 54.15532}
+   neg region {'u_coarse': 65.51931, 'Ecoarse': 0.27144, 'Efull': -0.09493, 'u_full': 65.54484, 'Ejp': -0.02665, 'u_jp': 65.51861}
+   first full-weight T=2e4 negative: {'u_coarse': 30.946125000000002, 'Ecoarse': 0.10181670119848371, 'Efull': -0.332425811463334, 'u_full': 30.946095000000003, 'Ejp': -0.2613894449862048, 'u_jp': 30.945935000000002}
+   first JP T=2e4 negative:          {'u_coarse': 30.946125000000002, 'Ecoarse': 0.10181670119848371, 'Efull': -0.332425811463334, 'u_full': 30.946095000000003, 'Ejp': -0.2613894449862048, 'u_jp': 30.945935000000002}
+     {'u_coarse': 17.69037, 'Ecoarse': 0.56598, 'Efull': 0.19537, 'u_full': 17.69032, 'Ejp': 0.24877, 'u_jp': 17.69032}
+     {'u_coarse': 19.423, 'Ecoarse': 0.68168, 'Efull': 0.46887, 'u_full': 19.42316, 'Ejp': 0.51723, 'u_jp': 19.42323}
+     {'u_coarse': 19.53813, 'Ecoarse': 0.89633, 'Efull': 0.65348, 'u_full': 19.53747, 'Ejp': 0.69443, 'u_jp': 19.53746}
+     {'u_coarse': 19.65125, 'Ecoarse': 0.95268, 'Efull': 0.57734, 'u_full': 19.64967, 'Ejp': 0.67576, 'u_jp': 19.64976}
+     {'u_coarse': 24.49819, 'Ecoarse': 0.92345, 'Efull': 0.62281, 'u_full': 24.49811, 'Ejp': 0.71759, 'u_jp': 24.4981}
+     {'u_coarse': 26.01344, 'Ecoarse': 0.61379, 'Efull': 0.36896, 'u_full': 26.01588, 'Ejp': 0.41764, 'u_jp': 26.01583}
+     {'u_coarse': 27.90025, 'Ecoarse': 0.75613, 'Efull': 0.35832, 'u_full': 27.90013, 'Ejp': 0.40796, 'u_jp': 27.90023}
+     {'u_coarse': 27.91488, 'Ecoarse': 0.74343, 'Efull': 0.43405, 'u_full': 27.91343, 'Ejp': 0.51804, 'u_jp': 27.91343}
+     {'u_coarse': 30.94613, 'Ecoarse': 0.10182, 'Efull': -0.33243, 'u_full': 30.9461, 'Ejp': -0.26139, 'u_jp': 30.94594}
+     {'u_coarse': 34.26269, 'Ecoarse': 0.27821, 'Efull': 0.07953, 'u_full': 34.26422, 'Ejp': 0.13326, 'u_jp': 34.26405}
+     {'u_coarse': 37.19169, 'Ecoarse': 0.5214, 'Efull': 0.19115, 'u_full': 37.20614, 'Ejp': 0.22256, 'u_jp': 37.20604}
+     {'u_coarse': 38.02262, 'Ecoarse': 0.97237, 'Efull': 0.688, 'u_full': 38.02425, 'Ejp': 0.7782, 'u_jp': 38.02425}

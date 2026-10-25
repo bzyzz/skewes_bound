@@ -1,0 +1,42 @@
+{
+ "schema": 2,
+ "params": {
+  "omega": "727.951335444",
+  "eta1": "1.50e-7",
+  "delta": "2e-9",
+  "T0": "80000000",
+  "lam": "4,52,44",
+  "M_moll": 60,
+  "EVAL_DPS": 35
+ },
+ "versions": {
+  "python": "3.11.17",
+  "python_flint": "0.9.0",
+  "flint": "3.6.0"
+ },
+ "code_sha256": {
+  "arb_recert.py": "1c1bb3e59478bbbe1748b254452ca1cb3491638801935df313eb1b8cd2807308",
+  "arb_combine.py": "69e70eae31399b9f62aee42193d1d90022df422f999c2dad59955f8a6bfb7f43",
+  "certio.py": "96786428dda627f221442e6ec60e4e64fcad823b8dfb973d7a869d2c199e0a26",
+  "error_bounds.py": "7ab5ae7ef4dd8d8c03b732fd34395653e6648ab291613b35449ba5da22318a35"
+ },
+ "omega": "727.951335444",
+ "eta1": "1.50e-7",
+ "delta": "2e-9",
+ "eta0": "[1.5200000000000000000e-7 +/- 1e-31]",
+ "T0": "80000000",
+ "N_T0": 195565267,
+ "lam": "4,52,44",
+ "M_moll": 60,
+ "cutoff_gap_lower": "[0.0100000000000000 +/- 1e-21]",
+ "Phi_omega": "[1.00276268502628480798084273599 +/- 2.74e-30]",
+ "S_K": "[1.00292 +/- 2.27e-6]",
+ "J_K": "[0.00016 +/- 4.28e-6]",
+ "J_K_lower_ball": "0.0001557245850563049316406250",
+ "max_term_rad": 3.1925096948373475e-10,
+ "chunk_manifest_sha256": "dc368c1bfac9587eddeb8f0b2c2cb861435bf8dc7556f525d152a7409e36f22a",
+ "elapsed_s_this_run": 46.2,
+ "zero_source": "Arb only: zero caches (n <= 13,955,181) and acb.zeta_zeros re-isolation (arb_recert.py)",
+ "batch_manifest_sha256": "0aaf16a757e9e73794db078c719b58fb2243ff662ee9847161c7b2a3198e2ced",
+ "n_batches": 105924
+}

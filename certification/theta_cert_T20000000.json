@@ -1,0 +1,42 @@
+{
+  "schema": 2,
+  "params": {
+    "omega": "727.9513326544",
+    "eta1": "5.5e-7",
+    "delta": "2e-9",
+    "M": 60,
+    "lam": [
+      14,
+      72,
+      14
+    ],
+    "T0": "20000000"
+  },
+  "versions": {
+    "python": "3.11.17",
+    "python_flint": "0.9.0",
+    "flint": "3.6.0"
+  },
+  "code_sha256": {
+    "theta_certify.py": "8ff579e4e2c048a35a4326d3f4dd6c03c9e06d6f43087468d2885dbb70ab42bc",
+    "certio.py": "96786428dda627f221442e6ec60e4e64fcad823b8dfb973d7a869d2c199e0a26",
+    "error_bounds.py": "7ab5ae7ef4dd8d8c03b732fd34395653e6648ab291613b35449ba5da22318a35"
+  },
+  "omega": "727.9513326544",
+  "eta1": "5.5e-7",
+  "delta": "2e-9",
+  "M_moll": 60,
+  "lam": "14,72,14",
+  "T0": "20000000",
+  "N_T0": 44478606,
+  "S_theta": "[1.00036 +/- 5.90e-6]",
+  "R3_theta": "6.11289e-53",
+  "R4_envelope": "0.0005040532870",
+  "R4_stieltjes": "0.0003493735844",
+  "R5_theta": "4.25132e-20",
+  "I_lower_envelope": "-0.0001499537670",
+  "I_lower_stieltjes": "4.725935642e-6",
+  "u_lo": "727.9513321024000",
+  "u_hi": "727.9513332064000",
+  "elapsed_s": 289.0
+}
