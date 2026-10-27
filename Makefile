@@ -5,7 +5,7 @@ RACE     = race
 RACE_TS  = $(shell seq -s, 5000 5000 100000)
 
 .PHONY: all certify s_cert smith check check-only arb-recert arb-combine bounds test clean clean-cache \
-        race-build race-check race-zeros race-certify
+        race-build race-check race-zeros race-certify team-check
 
 all: certify
 
@@ -63,3 +63,10 @@ clean:
 
 clean-cache:
 	rm -rf $(CERT)/s_chunks
+
+# Team races mod 8 and 12: Turing for the extra zeros (8.3, 12.11), then the Arb certificates.
+team-check:
+	cd $(RACE) && $(PYTHON) -u zeros/turing.py data/arb_8_3/certified.npz 40 $(RACE_TS)
+	cd $(RACE) && $(PYTHON) -u zeros/turing.py data/arb_12_11/certified.npz 40 $(shell seq -s, 5000 5000 50000)
+	cd $(RACE)/team && $(PYTHON) -u team_certify.py 8 100000 64.764612 1.4e-4 2e-5 40 0,0,1 $(WORKERS)
+	cd $(RACE)/team && $(PYTHON) -u team_certify.py 12 50000 339.632308 2.8e-4 1.1e-4 60 0,0,1 $(WORKERS)

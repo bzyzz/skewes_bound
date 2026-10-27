@@ -55,3 +55,11 @@ cd criterion && python certify.py 100000 111.5458300 1.2e-4 7.62e-5 40 0,0,1 8
   - two misprinted constants in Ford–Hudson's explicit formula (effect below 10⁻²¹);
   - a missing justification for the interchange of the zero sum with the integral, now added.
 - Expert review is still pending.
+
+## Team races modulo 8 and 12
+
+The folder `team/` treats the race between the quadratic residues and the non-residues modulo 8 and 12, which is Problem 9 of the CPNT problem list. Results:
+- **Mod 8:** π(x;8,1) exceeds the average of the classes 3, 5, 7 for some x < 10^{28.1270}. This is the region located heuristically by Bays–Ford–Hudson–Rubinstein (2001).
+- **Mod 12:** π(x;12,1) exceeds the average of the classes 5, 7, 11 for some x < 10^{147.5007}.
+
+Both were certified in Arb and independently reviewed. Statements, derivation and numbers are in [`team/THEOREM.md`](team/THEOREM.md). Run `make team-check` from the repository root.

@@ -44,6 +44,7 @@ The error terms are implemented in `certification/error_bounds.py`:
 Inputs:
 - [cited] Riemann–von Mangoldt explicit formula.
 - [cited] Dusart (2018), Theorem 5.1: $\pi(y) \le \frac{y}{\log y}(1 + \frac{1}{\log y} + \frac{2}{\log^2 y} + \frac{7.32}{\log^3 y})$ for $y \ge 4\cdot 10^9$.
+  - **Independent of Dusart's constant:** the original Ramanujan J. article was not accessible, but Axler, Integers 18 (2018) #A52, Theorem 2 (open access, read in the original) gives π(x) < x/(log x − 1 − 1/log x − 3.15/log²x − 12.85/log³x − 71.3/log⁴x − 463.2275/log⁵x − 4585/log⁶x) for x ≥ 49. `certification/check_axler_vs_dusart.py` certifies in Arb that this implies the Dusart-form bound for 60 ≤ log x ≤ 800, which covers every main term in this repository. (At log x below about 54 Axler's bound is the weaker one; there we rely on Dusart.)
 - [cited] Platt–Trudgian (2021): all zeros with $0 < |\gamma| \le 3\cdot 10^{12}$ are simple and on the critical line.
 - [cited] Lehman (1966), Lemmas 1–2; Saouter–Trudgian–Demichel (2015), Lemmas 2.1, 2.7–2.10.
 

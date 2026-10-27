@@ -30,3 +30,5 @@ race/data/arb_*/chunk_*.npz
 race/data/*.log
 race/heuristics/zeros/
 race/lit/
+race/data/arb_8_3_T5e4/
+race/team/*.log

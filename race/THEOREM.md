@@ -31,6 +31,7 @@ Notation:
 - **(D) [cited] Dusart, Ramanujan J. 45 (2018), Thm 5.1, as quoted in Revers (J. Number Theory 2025, §4).** π(y) ≤ (y/log y)(1 + 1/log y + 2/log²y + 7.32/log³y) for y ≥ 4·10⁹.
   - The primary source has not been re-read here.
   - The weaker version with 7.59, valid for y > 1, would add 1.25·10⁻⁵ to the main term, which is harmless.
+  - **Independent of Dusart's constant:** the original Ramanujan J. article was not accessible, but Axler, Integers 18 (2018) #A52, Theorem 2 (open access, read in the original) gives π(x) < x/(log x − 1 − 1/log x − 3.15/log²x − 12.85/log³x − 71.3/log⁴x − 463.2275/log⁵x − 4585/log⁶x) for x ≥ 49. `certification/check_axler_vs_dusart.py` certifies in Arb that this implies the Dusart-form bound for 60 ≤ log x ≤ 800, which covers every main term in this repository. (At log x below about 54 Axler's bound is the weaker one; there we rely on Dusart.)
 - **(P) [cited] Platt, Math. Comp. 85 (2016), arXiv:1305.3087.** GRH holds for all primitive characters of modulus q ≤ 400,000 up to height t₀ = max(10⁸/q, 7.5·10⁷/q + 200) for even q, and max(10⁸/q, 3.75·10⁷/q + 200) for odd q. That gives 3.33·10⁷, 2.5·10⁷, 1.25·10⁷ and 4.17·10⁶; we use the rounded-down values A_χ = 3.3·10⁷, 2.5·10⁷, 1.25·10⁷ and 4.1·10⁶. (Checked against Theorem 7.1 in the body of Platt's paper; since 10⁸/q dominates for q | 24, the even/odd distinction does not matter.)
 - **(B) [cited] Bennett–Martin–O'Bryant–Rechnitzer, Math. Comp. 90 (2021), Thm 1.1.** Let N(T,χ) = #{ρ: |γ| ≤ T}, T ≥ 5/7 and ℓ = log(q(T+2)/2π) > 1.567. Then |N(T,χ) − (T/π) log(qT/2πe) + χ(−1)/4| ≤ 0.22737ℓ + 2 log(1+ℓ) − 0.5.
 - **(T) [cited] Turing's method.**
@@ -126,6 +127,5 @@ Independent review (2026-10-25, fresh agent with no access to these conclusions)
 Code fixes from the review (ε₀ with the true C_χ and the constant 1.37; `require(T0 < A_χ)`) were applied on 2026-10-25, and the certificate was regenerated: U = −0.0050 ± 5.05·10⁻⁴, the same as before at printed precision.
 
 Open items before any claim:
-- re-reading Dusart Thm 5.1 in the original;
 - a reproduction from scratch;
 - expert review.

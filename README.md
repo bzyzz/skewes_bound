@@ -20,6 +20,8 @@ This decouples the window half-width $\eta_0$ from the zero cutoff $T_0$. We wor
 | Skewes, main theorem | $\pi(x) > \mathrm{li}(x)$ for some $x \in [e^{727.951335292}, e^{727.951335596}]$, so $\Xi < e^{727.951335596}$ | 195,565,267 ($T_0 = 8\cdot 10^7$) | certified in Arb |
 | $\theta(x) - x$ | $\theta(x) > x$ for some $x \in [e^{727.9513323698}, e^{727.9513328538}]$ | 118,488,123 ($T_0 = 5\cdot 10^7$) | certified in Arb |
 | Prime race mod 24 | $\pi(x;24,11) < \pi(x;24,1)$ for some $x$ with $\log x \in [111.5456338, 111.5460262]$, so the first sign change is $< 10^{48.4439}$ | 675,495 zeros of four Dirichlet $L$-functions ($T_0 = 10^5$) | certified in Arb |
+| Team race mod 8 | $\pi(x;8,1)$ exceeds the average of the classes 3, 5, 7 for some $x$ with $\log x \in [64.764452, 64.764772]$, so for some $x < 10^{28.1270}$ | zeros of 3 Dirichlet $L$-functions to $10^5$ | certified in Arb |
+| Team race mod 12 | $\pi(x;12,1)$ exceeds the average of the classes 5, 7, 11 for some $x$ with $\log x \in [339.631918, 339.632698]$, so for some $x < 10^{147.5007}$ | zeros of 3 Dirichlet $L$-functions to $5\cdot 10^4$ | certified in Arb |
 | Smith (2016), RH removed | $\Xi < e^{727.951335402030}$ | Platt's sum over $1.04\cdot 10^{11}$ zeros | **conditional** on one tabulated value in Smith's MSc thesis |
 
 **For comparison:**
@@ -33,6 +35,8 @@ This decouples the window half-width $\eta_0$ from the zero cutoff $T_0$. We wor
   - the rest re-isolated with `acb_dirichlet_zeta_zeros` by `certification/arb_recert.py`, about 15 hours on 64 cores.
 - The Arb-only certificates are `certification/s_cert*_arb.json`. With them the envelope margin is $I(\omega,\eta_0) \ge 2.32\cdot 10^{-5}$, giving more than $2.75\cdot 10^{153}$ consecutive integers with $\pi(x) > \mathrm{li}(x)$.
 - The certificates without the `_arb` suffix used floating-point Riemann–Siegel brackets (`fast_cert_zeros.hpp`) above $6.8\cdot 10^6$. They are kept for comparison and give the same bounds with slightly smaller margins.
+
+**Team races** (quadratic residues against non-residues modulo 8 and 12): see [`race/team/THEOREM.md`](race/team/THEOREM.md). Bays–Ford–Hudson–Rubinstein (2001) located the mod-8 region heuristically; no explicit bound was known for either race.
 
 **Prime race.** See [`race/README.md`](race/README.md).
 - The four $L$-functions have conductors 3, 4, 8 and 24.
@@ -50,6 +54,7 @@ conda env create -f environment.yml && conda activate skewes   # or: pip install
 make test          # regression tests for outward rounding and failure modes
 make check-only    # re-check all shipped certificates (Skewes float and Arb, Smith) against the Arb error bounds
 make race-check    # race: Turing completeness of the shipped zeros, then the Arb certificate (~15 s on 8 cores)
+make team-check    # team races mod 8 and 12: Turing for the extra zeros, then both Arb certificates (~1 min)
 ```
 
 Full recomputation needs the zero data below:
@@ -98,6 +103,7 @@ certification/
   error_bounds.py                      hat K and the error terms R_2..R_5 in Arb
   certify_S.py                         S_K(omega, T0) over all zeros below T0
   arb_recert.py, arb_combine.py        Arb isolation of all zeros up to 8e7 and the Arb-only certificates
+  check_axler_vs_dusart.py             Axler's open-access pi(x) bound implies the Dusart form used (60 <= log x <= 800)
   check_theorem.py                     combines a certificate with the error bounds
   theta_certify.py                     theta(x) > x criterion, all in Arb
   certify_smith_unconditional.py       conditional refinement of Smith (2016)
@@ -107,6 +113,7 @@ certification/
   theta_cert_*.json                    certificates for theta(x) - x
   smith_unconditional_certificate.json certificate for the conditional Smith refinement
 race/                                  pi(x;24,11) - pi(x;24,1): zeros, Turing, criterion, certificate (see race/README.md)
+race/team/                             residue vs non-residue races mod 8 and 12 (THEOREM.md, team_*.py, certificates)
 build_zero_cache.py                    Arb zero cache builder
 fast_cert_zeros.hpp, fast_cert_lib.cpp floating-point Riemann-Siegel zero bracketing (cross-check)
 build_and_scan_50m.py, extend_to_80m.py driver for the floating-point zeros above 6.8e6
