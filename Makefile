@@ -3,9 +3,11 @@ WORKERS  ?= 48
 CERT     = certification
 RACE     = race
 RACE_TS  = $(shell seq -s, 5000 5000 100000)
+MERT     = mertens
 
 .PHONY: all certify s_cert smith check check-only arb-recert arb-combine bounds test clean clean-cache \
-        race-build race-check race-zeros race-certify team-check
+        race-build race-check race-zeros race-certify team-check \
+        mertens-build mertens-fields mertens-certify mertens-download mertens-lmfdb
 
 all: certify
 
@@ -70,3 +72,22 @@ team-check:
 	cd $(RACE) && $(PYTHON) -u zeros/turing.py data/arb_12_11/certified.npz 40 $(shell seq -s, 5000 5000 50000)
 	cd $(RACE)/team && $(PYTHON) -u team_certify.py 8 100000 64.764612 1.4e-4 2e-5 40 0,0,1 $(WORKERS)
 	cd $(RACE)/team && $(PYTHON) -u team_certify.py 12 50000 339.632308 2.8e-4 1.1e-4 60 0,0,1 $(WORKERS)
+
+# ---- Mertens' first theorem (see mertens/README.md) ----
+mertens-build:
+	cd $(MERT)/lmfdb && $(CC) -O2 -shared -fPIC platt.c -o libplatt.so
+	cd $(MERT)/scan && $(CC) -O3 -fopenmp -shared -fPIC scan.c -o libscan.so -lm
+
+mertens-fields:
+	cd $(MERT)/scan && $(PYTHON) -u certify_fields.py 300
+
+# x < 10^807.41 from our zeros below 1.3e6 (needs $$MERTENS_ZERO_CACHE).
+mertens-certify:
+	cd $(MERT)/criterion && $(PYTHON) -u certify_first.py 1859.1290514 9.24e-6 2e-9 494 4,52,44 1300000 $(WORKERS)
+
+mertens-download:
+	$(MERT)/lmfdb/download.sh files_to_1e9.txt
+
+# x < 10^215.281 with Platt's LMFDB zeros to 1e9 (needs zero_cache_arb/ and the LMFDB files).
+mertens-lmfdb:
+	cd $(MERT)/lmfdb && $(PYTHON) -u certify_first_lmfdb.py 495.7028331322 1.4e-8 5e-10 135 4,52,44 1000000000 files_to_1e9.txt $(WORKERS)

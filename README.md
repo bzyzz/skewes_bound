@@ -3,15 +3,16 @@
 Certified computations, in Arb ball arithmetic, for:
 - upper bounds on **Skewes's number** $\Xi := \min\{x \ge 2 : \pi(x) > \mathrm{li}(x)\}$;
 - the first sign change of $\theta(x) - x$;
-- the **prime number race** $\pi(x;24,11) - \pi(x;24,1)$.
+- the **prime number race** $\pi(x;24,11) - \pi(x;24,1)$, and the residue against non-residue races modulo 8 and 12;
+- the first sign change in **Mertens' first theorem**.
 
-All three use a new two-scale kernel in Lehman's explicit-formula method.
+All of them use a new two-scale kernel in Lehman's explicit-formula method.
 
 The kernel is $K = K_{\mathrm{core}} * \psi_\delta$:
 - A low-order cosine-power core of half-width $\eta_1$ sets the averaging window.
 - A much narrower $\cos^{2M}$ mollifier makes negligible the contribution of any zeros off the critical line above the verified height $A$ ($3\cdot 10^{12}$ for $\zeta$, by Platt–Trudgian 2021).
 
-This decouples the window half-width $\eta_0$ from the zero cutoff $T_0$. We work at $\eta_0 T_0 \approx 12$; the truncated Gaussian kernels of all earlier Skewes computations needed $\eta_0 T_0 \approx 114$–$136$. Statements, inputs and proof outlines are in [`THEOREM.md`](THEOREM.md) and [`race/THEOREM.md`](race/THEOREM.md). A manuscript is in preparation.
+This decouples the window half-width $\eta_0$ from the zero cutoff $T_0$. We work at $\eta_0 T_0 \approx 12$; the truncated Gaussian kernels of all earlier Skewes computations needed $\eta_0 T_0 \approx 114$–$136$. Statements, inputs and proof outlines are in [`THEOREM.md`](THEOREM.md), [`race/THEOREM.md`](race/THEOREM.md), [`race/team/THEOREM.md`](race/team/THEOREM.md) and [`mertens/THEOREM.md`](mertens/THEOREM.md). A manuscript is in preparation.
 
 ## Results
 
@@ -22,12 +23,15 @@ This decouples the window half-width $\eta_0$ from the zero cutoff $T_0$. We wor
 | Prime race mod 24 | $\pi(x;24,11) < \pi(x;24,1)$ for some $x$ with $\log x \in [111.5456338, 111.5460262]$, so the first sign change is $< 10^{48.4439}$ | 675,495 zeros of four Dirichlet $L$-functions ($T_0 = 10^5$) | certified in Arb |
 | Team race mod 8 | $\pi(x;8,1)$ exceeds the average of the classes 3, 5, 7 for some $x$ with $\log x \in [64.764452, 64.764772]$, so for some $x < 10^{28.1270}$ | zeros of 3 Dirichlet $L$-functions to $10^5$ | certified in Arb |
 | Team race mod 12 | $\pi(x;12,1)$ exceeds the average of the classes 5, 7, 11 for some $x$ with $\log x \in [339.631918, 339.632698]$, so for some $x < 10^{147.5007}$ | zeros of 3 Dirichlet $L$-functions to $5\cdot 10^4$ | certified in Arb |
+| Mertens' first theorem | $\sum_{p\le x}(\log p)/p < \log x + E$ for some $x$ with $\log x \in [495.7028331177, 495.7028331467]$, so the first sign change is $< 10^{215.2811}$ | all $2.85\cdot10^9$ zeros below $10^9$ (ours below $8\cdot10^7$, Platt's LMFDB zeros above) | certified in Arb |
+| Mertens, self-contained | the same for some $x < 10^{807.4095}$ | 2,325,572 ($T_0 = 1.3\cdot10^6$) | certified in Arb |
 | Smith (2016), RH removed | $\Xi < e^{727.951335402030}$ | Platt's sum over $1.04\cdot 10^{11}$ zeros | **conditional** on one tabulated value in Smith's MSc thesis |
 
 **For comparison:**
 - **Skewes:** the best published bounds are $\Xi < e^{727.951336105}$ unconditionally and $e^{727.951335621}$ under RH (Saouter–Trudgian–Demichel 2015, $5.25\cdot 10^8$ zeros).
 - **$\theta(x) - x$:** Platt–Trudgian (2016) give $\theta(x) > x$ for some $x < e^{727.951332668}$, using about $2\cdot 10^{10}$ zeros.
 - **Prime race:** for $\pi(x;24,11) < \pi(x;24,1)$ the previous bound was $10^{353}$ (Ford–Hudson 2001).
+- **Mertens' first theorem:** no explicit bound was known (Problem 14 of the 2024 comparative prime number theory problem list). Büthe (2015) bounded the second and third theorems by $e^{495.702833165}$, in the same region.
 
 **Main theorem.**
 - Every zero below $T_0 = 8\cdot10^7$ is isolated with Arb:
@@ -37,6 +41,8 @@ This decouples the window half-width $\eta_0$ from the zero cutoff $T_0$. We wor
 - The certificates without the `_arb` suffix used floating-point Riemann–Siegel brackets (`fast_cert_zeros.hpp`) above $6.8\cdot 10^6$. They are kept for comparison and give the same bounds with slightly smaller margins.
 
 **Team races** (quadratic residues against non-residues modulo 8 and 12): see [`race/team/THEOREM.md`](race/team/THEOREM.md). Bays–Ford–Hudson–Rubinstein (2001) located the mod-8 region heuristically; no explicit bound was known for either race.
+
+**Mertens' first theorem.** See [`mertens/README.md`](mertens/README.md). The main certificate also uses D. J. Platt's rigorously isolated zeros from the LMFDB between $8\cdot10^7$ and $10^9$; the $10^{807.41}$ certificate uses only our own zeros.
 
 **Prime race.** See [`race/README.md`](race/README.md).
 - The four $L$-functions have conductors 3, 4, 8 and 24.
@@ -55,6 +61,7 @@ make test          # regression tests for outward rounding and failure modes
 make check-only    # re-check all shipped certificates (Skewes float and Arb, Smith) against the Arb error bounds
 make race-check    # race: Turing completeness of the shipped zeros, then the Arb certificate (~15 s on 8 cores)
 make team-check    # team races mod 8 and 12: Turing for the extra zeros, then both Arb certificates (~1 min)
+make mertens-build mertens-fields   # Mertens: build the decoders/scanners; quadratic fields in Arb
 ```
 
 Full recomputation needs the zero data below:
@@ -63,6 +70,8 @@ Full recomputation needs the zero data below:
 make arb-recert WORKERS=64   # isolate all zeros up to 8e7 in Arb and sum S_K per batch (~15 h)
 make arb-combine             # combine into certification/*_arb.json (checks coverage and N(T0))
 make race-zeros              # locate and certify the race zeros, then run Turing (~80 core-hours)
+make mertens-certify         # Mertens, x < 10^807.41 (~2 min)
+make mertens-download mertens-lmfdb   # Mertens, x < 10^215.281: 33 GB of LMFDB zeros, then ~70 min on 24 cores
 ```
 
 The θ certificate and the conditional Smith refinement are checked with
@@ -93,6 +102,7 @@ The zeta zero data are too large for git and are regenerated by the listed scrip
 | Arb zero balls, $13{,}955{,}182 \le n \le 195{,}565{,}267$ | 4.2 GB | `certification/arb_recert.py` → `zero_cache_arb/` (per-batch sums in `certification/arb_batches/`) |
 | floating-point zero brackets above $6.8\cdot 10^6$ | 2.2 GB | `build_and_scan_50m.py`, `extend_to_80m.py` → `chunks_bin/` (cross-check only) |
 | Race: certified zero intervals, $0 < \gamma \le 10^5$ | 11 MB | `race/zeros/` pipeline → `race/data/arb_*/certified.npz` (**shipped**) |
+| Mertens: Platt's zeros, $8\cdot10^7 < \gamma \le 10^9$ | 33 GB | LMFDB, via `mertens/lmfdb/download.sh` (md5-checked) → `mertens/lmfdb/data/` or `$LMFDB_ZETA_DIR` |
 
 ## Layout
 
@@ -114,6 +124,7 @@ certification/
   smith_unconditional_certificate.json certificate for the conditional Smith refinement
 race/                                  pi(x;24,11) - pi(x;24,1): zeros, Turing, criterion, certificate (see race/README.md)
 race/team/                             residue vs non-residue races mod 8 and 12 (THEOREM.md, team_*.py, certificates)
+mertens/                               Mertens' first theorem: criterion, LMFDB decoder, certificates, scans (see mertens/README.md)
 build_zero_cache.py                    Arb zero cache builder
 fast_cert_zeros.hpp, fast_cert_lib.cpp floating-point Riemann-Siegel zero bracketing (cross-check)
 build_and_scan_50m.py, extend_to_80m.py driver for the floating-point zeros above 6.8e6

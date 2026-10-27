@@ -1,0 +1,51 @@
+{
+  "schema": 2,
+  "params": {
+    "omega": "495.7028331322",
+    "eta1": "1.4e-8",
+    "delta": "5e-10",
+    "M": 135,
+    "lam": [
+      4,
+      52,
+      44
+    ],
+    "T0": "1000000000"
+  },
+  "versions": {
+    "python": "3.11.17",
+    "python_flint": "0.9.0",
+    "flint": "3.6.0"
+  },
+  "code_sha256": {
+    "certify_first_lmfdb.py": "6f099e638c5789dde8397bddd6a1c76963df2b4145cd7f382fff0b232a0c8ac5",
+    "platt.py": "d83179f438af7585c1a6cd6efae40da2ceb155a67149ad021383552ffe15605e",
+    "platt.c": "dc9c45e377e2b9534fa41177fe64b90ce4b9695f570ca3bd11665b231a6f06b6",
+    "libplatt.so": "1e82f818970bc98d364a140c2d2deafc52e0bd1a3cbed72785e9c41d86d9336e",
+    "kernel_fast.py": "fc1386ebb85469d7829f44eee4901e193b2308633617dc410dbf20a34cf60c76",
+    "certify_first.py": "84ebeeb32409b64acc73ddd45f1961d03488b726a704c9f4864928103255e3ae",
+    "error_bounds.py": "7ab5ae7ef4dd8d8c03b732fd34395653e6648ab291613b35449ba5da22318a35",
+    "certio.py": "96786428dda627f221442e6ec60e4e64fcad823b8dfb973d7a869d2c199e0a26"
+  },
+  "omega": "495.7028331322",
+  "eta1": "1.4e-8",
+  "delta": "5e-10",
+  "M_moll": 135,
+  "lam": "4,52,44",
+  "T0": "1000000000",
+  "N_T0": 2846548032,
+  "N_ours": 195565267,
+  "N_lmfdb": 2650982765,
+  "next_zero_above_T0": "[1000000000.11565089002084816139 +/- 1.67e-21]",
+  "S_M": "[-1.00024 +/- 5.73e-6]",
+  "R4_envelope": "7.550699215e-5",
+  "R4_stieltjes": "4.786914751e-5",
+  "R5": "3.89000e-38",
+  "R_small": "2.01615e-36",
+  "U": "[-0.00020 +/- 4.40e-6]",
+  "U_upper": "-0.0001956011483",
+  "u_lo": "495.7028331177000",
+  "u_hi": "495.7028331467000",
+  "log10_x_upper": "215.281005099",
+  "elapsed_s": 4205.2
+}

@@ -32,3 +32,12 @@ race/heuristics/zeros/
 race/lit/
 race/data/arb_8_3_T5e4/
 race/team/*.log
+
+# Mertens: LMFDB data (download.sh), float bins, simulation caches, regenerable zeros, logs
+mertens/lmfdb/data
+mertens/lmfdb/bins/
+mertens/sim/*.npz
+mertens/scan/*.npz
+mertens/zeros/float_*.npy
+mertens/zeros/arb_*/chunk_*.npz
+mertens/**/*.log
