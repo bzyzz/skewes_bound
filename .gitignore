@@ -41,3 +41,8 @@ mertens/scan/*.npz
 mertens/zeros/float_*.npy
 mertens/zeros/arb_*/chunk_*.npz
 mertens/**/*.log
+
+# Census: compiled binary, run logs, regenerable float zeros
+census/count_races
+census/*.log
+census/zeros/
