@@ -14,9 +14,9 @@ The hypotheses are:
 * `hZint`, `hZ` **[cited + derived]** the proof of Theorem 5.5 (Platt–Trudgian's RH verification
   to `3·10¹²`, Lemmas 3.2–3.3, and Lemma 2.9): `∫ K(u - ω) Z(u) du ≤ S + R₄ + R₅`;
 * `hS`, `hR4`, `hR5` **[Arb]** `mertens/lmfdb/first_cert_lmfdb_T1000000000.json` (Theorem 1.4)
-  and `mertens/criterion/first_cert_T1300000.json` (Theorem 1.5). `hS` is the upper end of the
-  ball `S_M`. `R4_stieltjes` and `R5` are printed to 10 and 6 digits, so the hypotheses raise them
-  by one unit in the last printed digit.
+  and `mertens/criterion/first_cert_T1300000.json` (Theorem 1.5), regenerated 2026-10-31 with the
+  corrected Stieltjes bound (paper, Lemma 3.5) and full-digit ball serialization. Each hypothesis is
+  the upper end of the corresponding Arb ball (`S_M`, `R4_stieltjes`, `R5`), rounded up.
 
 Lean bounds `r(u)` on the window itself (`mertensR_le`), so the certificates' `R_small` is not
 needed.
@@ -89,8 +89,8 @@ theorem mertens215 (Z : ℝ → ℝ) (S R₄ R₅ : ℝ)
     (hExpl : ∀ᵐ u, u ∈ P215.window ω215 → F u ≤ bias + Z u + mertensR u)
     (hZint : IntegrableOn (fun u => P215.K (u - ω215) * Z u) (P215.window ω215))
     (hZ : ∫ u in P215.window ω215, P215.K (u - ω215) * Z u ≤ S + R₄ + R₅)
-    (hS : S ≤ -100024 / 10 ^ 5 + 573 / 10 ^ 8)
-    (hR4 : R₄ ≤ 4786914752 / 10 ^ 14)
+    (hS : S ≤ -100024418 / 10 ^ 8)
+    (hR4 : R₄ ≤ 4786950427 / 10 ^ 14)
     (hR5 : R₅ ≤ 389001 / 10 ^ 43) :
     ∃ x : ℝ, log x ∈ Icc (4957028331177 / 10 ^ 10) (4957028331467 / 10 ^ 10) ∧
       (∑ p ∈ (Finset.range (⌊x⌋₊ + 1)).filter Nat.Prime, log (p : ℝ) / p) < log x + mertensE ∧
@@ -134,8 +134,8 @@ theorem mertens807 (Z : ℝ → ℝ) (S R₄ R₅ : ℝ)
     (hExpl : ∀ᵐ u, u ∈ P807.window ω807 → F u ≤ bias + Z u + mertensR u)
     (hZint : IntegrableOn (fun u => P807.K (u - ω807) * Z u) (P807.window ω807))
     (hZ : ∫ u in P807.window ω807, P807.K (u - ω807) * Z u ≤ S + R₄ + R₅)
-    (hS : S ≤ -101044645655603 / 10 ^ 14 + 822 / 10 ^ 17)
-    (hR4 : R₄ ≤ 7495480210 / 10 ^ 14)
+    (hS : S ≤ -1010446456556023 / 10 ^ 15)
+    (hR4 : R₄ ≤ 7538010637 / 10 ^ 14)
     (hR5 : R₅ ≤ 680017 / 10 ^ 179) :
     ∃ x : ℝ, log x ∈ Icc (1859129042158 / 10 ^ 9) (1859129060642 / 10 ^ 9) ∧ Delta1 x < 0 ∧
       x < (10 : ℝ) ^ (8074095 / 10000 : ℝ) := by

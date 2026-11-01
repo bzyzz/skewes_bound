@@ -142,15 +142,15 @@ Open items:
 
 **Parameters.** T₀ = 10⁹, ω = 495.7028331322, η₁ = 1.4·10⁻⁸ (η₁T₀ = 14), δ = 5·10⁻¹⁰, M = 135, λ = (0.04, 0.52, 0.44). The mollifier factor uses a rigorous series in place of the 135-term product (`lmfdb/kernel_fast.py`).
 
-**Certified numbers** (`lmfdb/first_cert_lmfdb_T1000000000.json`, 3,973 s on 24 workers):
+**Certified numbers** (`lmfdb/first_cert_lmfdb_T1000000000.json`, regenerated 2026-10-31 after review in 5,491 s on 16 workers):
 
 | Term | Value |
 |---|---|
-| S_M | −1.00024 ± 5.7·10⁻⁶ |
+| S_M | −1.0002446 ± 4.0·10⁻⁷ |
 | R₄ (Stieltjes) | 4.787·10⁻⁵ |
 | R₅ | 3.9·10⁻³⁸ |
 | R_small | 2.0·10⁻³⁶ |
-| **U** | **≤ −1.956·10⁻⁴** |
+| **U** | **≤ −1.963·10⁻⁴** |
 
 The margin is thin: about 4 times R₄, and 44 times the radius of U. It matches the floating-point prediction (min U = −1.97·10⁻⁴). Code: `lmfdb/certify_first_lmfdb.py`, `platt.c`, `platt.py`, `kernel_fast.py`. **Independent review (2026-10-25)**, by a fresh agent without access to these conclusions, found no error that affects U < 0.
 - **Decoder:** bit-exact against an independent pure-Python decoder on 4 files, including the file at the 8·10⁷ seam and the file containing T₀. All 440 md5 sums match. The files have no trailing bytes, the t₀ values are exact integers, and blocks and files are contiguous from 78,146,000 to 1,000,046,000.
@@ -166,3 +166,9 @@ The margin is thin: about 4 times R₄, and 44 times the radius of U. It matches
 - attaches radius 2⁻¹⁰¹ to Platt's zeros.
 
 The regenerated certificate has U ≤ −1.956·10⁻⁴ and X < 10^{215.281005099}.
+
+**Review repairs (2026-10-31).** After the referee report of 2026-10-30, the certificate was regenerated with:
+- the corrected Stieltjes form of R₄ (its variation terms use the majorant Σλ_mΦ_{2m}, which bounds the derivative too); R₄ rose from 4.7869148·10⁻⁵ to 4.7869504·10⁻⁵;
+- all certified sums, including the per-worker partial sums, written as Arb balls with every digit (`certio.ball`). This shrank the radius of S_M from 5.7·10⁻⁶ to 4.0·10⁻⁷.
+
+Result: U ≤ −1.963·10⁻⁴, same window, X < 10^{215.281005099}. The 10^{807.41} certificate was regenerated in the same way (U ≤ −0.0103711; R₄ = 7.538·10⁻⁵).

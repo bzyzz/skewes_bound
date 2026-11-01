@@ -61,8 +61,10 @@ def provenance(params, code_paths):
 
 
 def ball(x, digits=30):
-    """Ball string that encloses x."""
-    return x.str(digits, radius=True)
+    """Ball string that encloses x, with all `digits` midpoint digits kept (more=True). Without more=True Arb drops
+    the midpoint digits below the radius and widens the printed radius, so a sum read back from the string can be
+    several times wider than the computed one (review item 3)."""
+    return x.str(digits, radius=True, more=True)
 
 
 def exact_int(x, what):

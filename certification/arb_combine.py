@@ -11,7 +11,7 @@ values. Check it with `python check_theorem.py <name>_arb.json`.
 import glob, hashlib, json, os
 import flint
 from flint import arb, acb
-from certio import require
+from certio import ball, require
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 BATCHES = os.path.join(HERE, "arb_batches")
@@ -52,7 +52,9 @@ def main():
             del out[k]
         out["code_sha256"] = {f: hashlib.sha256(open(os.path.join(HERE, f), "rb").read()).hexdigest()
                               for f in ("arb_recert.py", "arb_combine.py", "certio.py", "error_bounds.py")}
-        out.update(S_K=S.str(15), J_K=J.str(15), J_K_lower_ball=J.lower().str(25, radius=False),
+        # S_K is written with all digits so that check_theorem.py can derive the lower bound itself (J.lower());
+        # J_K_lower_ball is informational only (an outward ball around the lower endpoint).
+        out.update(S_K=ball(S, 35), J_K=ball(J, 35), J_K_lower_ball=ball(J.lower(), 25),
                    zero_source="Arb only: zero caches (n <= 13,955,181) and acb.zeta_zeros re-isolation (arb_recert.py)",
                    batch_manifest_sha256=manifest, n_batches=len(rs))
         json.dump(out, open(os.path.join(HERE, f"{name}_arb.json"), "w"), indent=1)

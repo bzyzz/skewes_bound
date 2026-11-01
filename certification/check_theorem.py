@@ -116,8 +116,9 @@ def main():
     Phi_om = phi_weight(omega)
     J_K = -1 + S_K / Phi_om
     require(J_K.overlaps(arb(cert["J_K"])), "recomputed J_K does not overlap certificate J_K")
-    J_K_lo = arb(cert["J_K_lower_ball"]).lower()
-    require(J_K.overlaps(arb(cert["J_K_lower_ball"])), "J_K_lower_ball does not overlap J_K")
+    # The lower bound is derived here from the serialized sum S_K; the certificate's own J_K_lower_ball is not used
+    # (review item 3: overlap with J_K does not make a supplied number a lower bound).
+    J_K_lo = J_K.lower()
 
     print("======================================================================")
     print("RIGOROUS VERIFICATION OF SKEWES NUMBER UPPER BOUND")
@@ -127,7 +128,7 @@ def main():
     print(f"              T0 = {cert['T0']} (N(T0) = {cert['N_T0']:,}), lam = {cert['lam']}, M_moll = {M_moll}")
     print(f"Phi(omega)  : {Phi_om.str(20)}")
     print(f"S_K(omega)  : {S_K.str(20)}")
-    print(f"J_K(omega)  : {arb(cert['J_K']).str(15)}  (lower bound >= {J_K_lo.str(12, radius=False)})")
+    print(f"J_K(omega)  : {J_K.str(15)}  (lower bound from S_K: {J_K_lo.str(12, radius=False)})")
     print("\nError bounds (Arb ball arithmetic):")
     R_tot, r_parts = total_error(omega, eta1, delta, T0, lam1, lam2, lam3, M_moll=M_moll, verbose=True)
 
@@ -141,7 +142,10 @@ def main():
     # By Lemma 9.4 & 9.5 of STD (2015), max_{u in [u_lo, u_hi]} (pi(e^u) - li(e^u)) >= I_lower * e^{u_lo/2} * Phi(u_hi) / u_hi
     use_I = I_lower_env if I_lower_env > 0 else I_lower
     peak_diff_lower = (use_I * (u_lo / 2).exp() * phi_weight(u_hi) / u_hi).lower()
-    consec_ints_lower = (peak_diff_lower * u_lo).lower()
+    # Integer run (review, further corrections): some x in [A, B] = [e^u_lo, e^u_hi] has D(x) = pi(x) - li(x) >= Q.
+    # n = max(floor(x), ceil(A)) is an integer in [A, B] with D(n) > Q - 1, and D(n + y) >= D(n) - y/log n for y >= 0,
+    # so pi(m) > li(m) for more than (Q - 1) log A - 1 consecutive integers m >= n.
+    consec_ints_lower = ((peak_diff_lower - 1) * u_lo - 1).lower()
 
     (eta_rh_sym, I_rh_sym, err_sym), (eta_rh_one, I_rh_one, err_one) = rh_sharpened_eta(
         omega, eta1, delta, lam1, lam2, lam3, use_I

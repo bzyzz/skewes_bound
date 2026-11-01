@@ -31,7 +31,7 @@ import numpy as np
 import flint
 from flint import acb, arb
 
-from certio import CertificationError, exact_int, fail, provenance, require
+from certio import CertificationError, ball, exact_int, fail, provenance, require
 from error_bounds import A_PT, bound_R4_envelope, bound_R4_stieltjes
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -78,7 +78,7 @@ def partial_sum(gs, P):
 
 def summarise(gs, P):
     require(all(a < b for a, b in zip(gs, gs[1:])), "zeros not strictly increasing within a batch")
-    return (partial_sum(gs, P).str(30, radius=True), gs[0].str(30, radius=True), gs[-1].str(30, radius=True), len(gs))
+    return (ball(partial_sum(gs, P), 40), gs[0].str(30, radius=True), gs[-1].str(30, radius=True), len(gs))
 
 
 def low_job(args):
@@ -181,11 +181,11 @@ def main():
     cert = provenance(P, CODE)
     cert.update({
         "omega": omega_s, "eta1": eta1_s, "delta": delta_s, "M_moll": M, "lam": lam_s, "T0": T0_s, "N_T0": N,
-        "S_theta": S.str(20, radius=True), "R3_theta": r3.str(6, radius=False),
-        "R4_envelope": r4_env.str(10, radius=False), "R4_stieltjes": r4_st.str(10, radius=False),
-        "R5_theta": r5.str(6, radius=False),
-        "I_lower_envelope": I_env.str(10, radius=False), "I_lower_stieltjes": I_st.str(10, radius=False),
-        "u_lo": u_lo.lower().str(16, radius=False), "u_hi": u_hi.upper().str(16, radius=False),
+        "S_theta": ball(S, 30), "R3_theta": ball(r3, 30),
+        "R4_envelope": ball(r4_env, 30), "R4_stieltjes": ball(r4_st, 30),
+        "R5_theta": ball(r5, 30),
+        "I_lower_envelope": ball(I_env, 30), "I_lower_stieltjes": ball(I_st, 30),
+        "u_lo": ball(u_lo.lower(), 30), "u_hi": ball(u_hi.upper(), 30),
         "elapsed_s": round(time.time() - t0, 1),
     })
     print(json.dumps(cert, indent=2))

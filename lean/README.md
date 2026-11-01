@@ -60,8 +60,10 @@ millions of zeros. That is far beyond current Mathlib.
 
 ## Certified numbers used
 
-Each numerical hypothesis is the upper (or lower) end of a printed Arb ball. Where a certificate
-prints a rounded upper bound without a radius, the hypothesis raises the last printed digit by one.
+Each numerical hypothesis is the upper (or lower) end of an Arb ball in the certificate, rounded
+outward. The Mertens and Skewes hypotheses were updated on 2026-10-31, after the certificates were
+regenerated with the corrected Stieltjes bound (paper, Lemma 3.5) and written with all digits: the
+earlier `hR4` values for Theorems 1.4 and 1.5 were below the corrected bounds.
 
 | Theorem | Source | Hypotheses |
 |---|---|---|
@@ -72,7 +74,7 @@ prints a rounded upper bound without a radius, the hypothesis raises the last pr
 | 1.5 | `mertens/criterion/first_cert_T1300000.json` | `S_M`, `R4_stieltjes`, `R5` |
 | 1.6 | `certification/s_certificate_arb.json`, `certification/error_bounds.py` | `S_K`; `R₃`, `R₄,env`, `R₅` from Table 6 |
 
-Not formalized: the `2.75·10^153` consecutive integers in Theorem 1.6 (which use [SD10, Thm 6.2]),
+Not formalized: the `2.75·10^153` consecutive integers in Theorem 1.6 (the rounding argument in its proof),
 Theorem 7.2 (`θ(x) > x`, which does not improve the literature), and the conditional Theorem 8.1.
 
 ## Build notes

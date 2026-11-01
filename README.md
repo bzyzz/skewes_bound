@@ -12,14 +12,14 @@ The kernel is $K = K_{\mathrm{core}} * \psi_\delta$:
 - A low-order cosine-power core of half-width $\eta_1$ sets the averaging window.
 - A much narrower $\cos^{2M}$ mollifier makes negligible the contribution of any zeros off the critical line above the verified height $A$ ($3\cdot 10^{12}$ for $\zeta$, by Platt–Trudgian 2021).
 
-This decouples the window half-width $\eta_0$ from the zero cutoff $T_0$. We work at $\eta_0 T_0 \approx 12$; the truncated Gaussian kernels of all earlier Skewes computations needed $\eta_0 T_0 \approx 114$–$136$. Statements, inputs and proof outlines are in [`THEOREM.md`](THEOREM.md), [`race/THEOREM.md`](race/THEOREM.md), [`race/team/THEOREM.md`](race/team/THEOREM.md) and [`mertens/THEOREM.md`](mertens/THEOREM.md). A manuscript is in preparation.
+This decouples the window half-width $\eta_0$ from the zero cutoff $T_0$. We work at $\eta_0 T_0 \approx 12$; the truncated Gaussian kernels of all earlier Skewes computations needed $\eta_0 T_0 \approx 114$–$136$. Statements, inputs and proof outlines are in [`THEOREM.md`](THEOREM.md), [`race/THEOREM.md`](race/THEOREM.md), [`race/team/THEOREM.md`](race/team/THEOREM.md) and [`mertens/THEOREM.md`](mertens/THEOREM.md). A manuscript is under revision.
 
 ## Results
 
 | Result | Statement | Zeros used | Status |
 |---|---|---|---|
 | Skewes, main theorem | $\pi(x) > \mathrm{li}(x)$ for some $x \in [e^{727.951335292}, e^{727.951335596}]$, so $\Xi < e^{727.951335596}$ | 195,565,267 ($T_0 = 8\cdot 10^7$) | certified in Arb |
-| $\theta(x) - x$ | $\theta(x) > x$ for some $x \in [e^{727.9513323698}, e^{727.9513328538}]$ | 118,488,123 ($T_0 = 5\cdot 10^7$) | certified in Arb |
+| $\theta(x) - x$ | $\theta(x) > x$ for some $x \in [e^{727.9513324512}, e^{727.9513327552}]$ | 195,565,267 ($T_0 = 8\cdot 10^7$) | certified in Arb |
 | Prime race mod 24 | $\pi(x;24,11) < \pi(x;24,1)$ for some $x$ with $\log x \in [111.5456338, 111.5460262]$, so the first sign change is $< 10^{48.4439}$ | 675,495 zeros of four Dirichlet $L$-functions ($T_0 = 10^5$) | certified in Arb |
 | Team race mod 8 | $\pi(x;8,1)$ exceeds the average of the classes 3, 5, 7 for some $x$ with $\log x \in [64.764452, 64.764772]$, so for some $x < 10^{28.1270}$ | zeros of 3 Dirichlet $L$-functions to $10^5$ | certified in Arb |
 | Team race mod 12 | $\pi(x;12,1)$ exceeds the average of the classes 5, 7, 11 for some $x$ with $\log x \in [339.631918, 339.632698]$, so for some $x < 10^{147.5007}$ | zeros of 3 Dirichlet $L$-functions to $5\cdot 10^4$ | certified in Arb |
@@ -79,14 +79,18 @@ The θ certificate and the conditional Smith refinement are checked with
 ```bash
 cd certification
 python theta_certify.py 727.9513329060 1.618e-6 2e-9 60 14,72,14 6800000
+python theta_certify.py 727.9513326544 5.5e-7 2e-9 60 14,72,14 20000000
 python theta_certify.py 727.9513326118 2.4e-7 2e-9 60 4,52,44 50000000    # uses zero_cache_arb/
+python theta_certify.py 727.9513326032 1.5e-7 2e-9 60 4,52,44 80000000    # the theorem; ~25 min on 16 cores
 python certify_smith_unconditional.py
 ```
 
 ### Provenance
 
-Each certificate records the SHA-256 of the code that produced it (`code_sha256`). The recorded hashes are not all current:
-- For `certify_S.py` and `theta_certify.py`, they predate the edit that replaced absolute paths by repository-relative ones. That edit changed path constants only.
+Each certificate records the SHA-256 of the code that produced it (`code_sha256`).
+
+After the referee report of 2026-10-30, the following were regenerated with the current code: the four θ certificates, both Mertens certificates, the Smith certificate, and the three `*_arb.json` Skewes certificates (re-aggregated from the saved Arb batches by `arb_combine.py`). Certified sums are now written with all digits (`certio.ball`). The other recorded hashes are not all current:
+- For `certify_S.py`, they predate the edit that replaced absolute paths by repository-relative ones. That edit changed path constants only.
 - Three early certificates (`s_cert_T3e6`, `s_cert_T4p3e6`, `s_cert_T6p8e6_st`) predate the last revision of `error_bounds.py`.
 
 `check_theorem.py` always recomputes the error terms with the current `error_bounds.py`, and every shipped certificate passes with the current code.

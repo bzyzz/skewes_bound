@@ -39,12 +39,13 @@ def kappa_2m_hat_arb(xi, m):
     Handles the removable singularities at xi = k*pi (1 <= k <= m) safely.
     """
     pi = arb.pi()
+    xi = abs(xi)    # the transform is even; the branch below assumes xi near +k*pi
     xi2 = xi * xi
     for k in range(1, m + 1):
         kpi = k * pi
-        if (xi - kpi).contains(0) or (xi + kpi).contains(0):
-            u = (xi - kpi) / pi if (xi - kpi).contains(0) else (xi + kpi) / pi
-            sinc_part = ((-1) ** (k - 1)) * u.sinc_pi() / (xi * (kpi + abs(xi)))
+        if (xi - kpi).contains(0):
+            u = (xi - kpi) / pi
+            sinc_part = ((-1) ** (k - 1)) * u.sinc_pi() / (xi * (kpi + xi))
             res = sinc_part * (kpi * kpi)
             for j in range(1, m + 1):
                 if j != k:
@@ -195,9 +196,17 @@ def bound_R4_envelope(omega, eta1, T0, lam1, lam2, lam3, n_sub=8192, xi_tail_val
 
 def bound_R4_stieltjes(omega, eta1, T0, lam1, lam2, lam3, n_sub=8192, xi_tail_val=160):
     """
-    Sharp R4 bound via Stieltjes integration by parts on phi(t) = |sin(eta1*t)| * g(t),
-    where g(t) = H_env(eta1*t) * (1/t + 1/(t^2*omega)) is positive and nonincreasing, and
-    H_env(xi) is the nonincreasing step-envelope majorant of |R_core(xi)|.
+    Sharp R4 bound via Stieltjes integration (Lemma lem:R4st of the paper; corrected after review, 2026-10-30).
+
+    Write a(t) = 1/t + 1/(omega t^2), f(t) = |sin(eta1 t) R_core(eta1 t)| a(t) (the actual summand) and
+    g(t) = H(eta1 t) a(t) with the SPECIFIC majorant H = lam1 Phi_2 + lam2 Phi_4 + lam3 Phi_6 (phi_core_tail_majorant_arb).
+    For xi > 3 pi, R_core = sum_m (-1)^m lam_m Phi_2m with each Phi_2m positive and decreasing, so |R_core| <= H AND
+    |R_core'| <= -H'. Hence |df| <= eta1 g dt - dg, and the Stieltjes argument with |N(t) - main| <= 2 log t gives
+      2 sum_{gamma > T0} f(gamma) <= (1/pi) int_{T0}^oo f log(t/2pi) dt + 8 g(T0) log T0 + 4 int g/t dt + 4 eta1 int g log t dt.
+    The main integral uses an Arb enclosure of f on each step; the three error integrals use H at the LEFT end of each
+    step (H is decreasing), so every step bound is an upper bound.
+    The previous version used an arbitrary decreasing step envelope of |R_core| in the error terms; such an envelope
+    need not control the variation of f (review item 1). Using H itself fixes this (R4 grows by ~9e-9 at T0 = 8e7).
     """
     pi = arb.pi()
     xi_T = eta1 * T0
@@ -206,42 +215,26 @@ def bound_R4_stieltjes(omega, eta1, T0, lam1, lam2, lam3, n_sub=8192, xi_tail_va
     require(xi_tail > xi_T, "xi_tail must exceed xi_T")
 
     h = (xi_tail - xi_T) / n_sub
-    a_list = [xi_T + j * h for j in range(n_sub)]
-    b_list = [xi_T + (j + 1) * h for j in range(n_sub)]
-    r_bounds = []
-    kh_bounds = []
-    for a, b in zip(a_list, b_list):
-        mid = (a + b) / 2
-        rad = (b - a) / 2
-        iv = arb(mid, rad.upper())
-        r_arb = kappa_core_rational_factor_arb(iv, lam1, lam2, lam3)
-        r_val = r_arb.upper()
-        kh_val = (abs(iv.sin()) * r_arb).upper()
-        require(r_val.is_finite() and kh_val.is_finite(), "non-finite enclosure on subinterval")
-        r_bounds.append(r_val)
-        kh_bounds.append(kh_val)
-
-    tail_at_end = phi_core_tail_majorant_arb(xi_tail, lam1, lam2, lam3).upper()
-    H_env = [None] * n_sub
-    cur = tail_at_end
-    for j in range(n_sub - 1, -1, -1):
-        cur = cur if cur > r_bounds[j] else r_bounds[j]
-        H_env[j] = cur
-
     int_main = arb(0)
     int_rem = arb(0)
     int_tv_sin = arb(0)
     for j in range(n_sub):
-        t_a = a_list[j] / eta1
-        t_b = b_list[j] / eta1
-        fac_kh = kh_bounds[j] * (1 + 1 / (t_a * omega))
-        fac_g = H_env[j] * (1 + 1 / (t_a * omega))
+        a = xi_T + j * h
+        b = xi_T + (j + 1) * h
+        iv = arb((a + b) / 2, ((b - a) / 2).upper())
+        kh_val = (abs(iv.sin()) * kappa_core_rational_factor_arb(iv, lam1, lam2, lam3)).upper()
+        H_a = phi_core_tail_majorant_arb(a, lam1, lam2, lam3).upper()
+        require(kh_val.is_finite() and H_a.is_finite(), "non-finite enclosure on subinterval")
+        t_a = a / eta1
+        t_b = b / eta1
+        fac = 1 + 1 / (t_a * omega)
         la = (t_a / (2 * pi)).log()
         lb = (t_b / (2 * pi)).log()
-        int_main += fac_kh * (lb * lb - la * la) / (2 * pi)
-        int_rem += 4 * fac_g * (1 / t_a - 1 / t_b)
-        int_tv_sin += 4 * eta1 * fac_g * (t_b - t_a) * (t_b.log() / t_a)
+        int_main += kh_val * fac * (lb * lb - la * la) / (2 * pi)
+        int_rem += 4 * H_a * fac * (1 / t_a - 1 / t_b)
+        int_tv_sin += 4 * eta1 * H_a * fac * (t_b - t_a) * (t_b.log() / t_a)
 
+    tail_at_end = phi_core_tail_majorant_arb(xi_tail, lam1, lam2, lam3).upper()
     T_tail = xi_tail / eta1
     fac_tail = tail_at_end * (1 + 1 / (T_tail * omega))
     lt = (T_tail / (2 * pi)).log()
@@ -251,7 +244,7 @@ def bound_R4_stieltjes(omega, eta1, T0, lam1, lam2, lam3, n_sub=8192, xi_tail_va
     # Since g(t) <= fac_tail * (T_tail^3 / t^4), \int_{T_tail}^\infty t^{-4} log(t) dt = T_tail^{-3} (3 log T_tail + 1) / 9
     int_tv_sin += 4 * eta1 * fac_tail * (3 * T_tail.log() + 1) / 9
 
-    g_T0 = H_env[0] * (1 / T0 + 1 / (T0 * T0 * omega))
+    g_T0 = phi_core_tail_majorant_arb(xi_T, lam1, lam2, lam3).upper() * (1 / T0 + 1 / (T0 * T0 * omega))
     term_b = 8 * g_T0 * T0.log()
     return (int_main + int_rem + int_tv_sin + term_b).upper()
 

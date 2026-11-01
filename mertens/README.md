@@ -47,7 +47,7 @@ The checks made on Platt's data:
 
 An independent review also checked the decoder (`lmfdb/platt.c`) bit for bit against a separate pure-Python decoder on four files, and 826 zeros against Arb's `acb_dirichlet_zeta_zeros`.
 
-**Provenance.** `lmfdb/first_cert_lmfdb_T1000000000.json` records the SHA-256 of `certify_first.py` and `certify_first_lmfdb.py` as they were before this directory was moved into the repository. The move changed only path constants and a docstring; the other recorded hashes (`certio.py`, `error_bounds.py`, `platt.c`, `platt.py`, `libplatt.so` built with `-O2`, `kernel_fast.py`) are current. `criterion/first_cert_T1300000.json` was regenerated after the move, with identical results.
+**Provenance.** Both certificates were regenerated on 2026-10-31, after the referee report, with the current code, so all recorded SHA-256 hashes are current: the corrected Stieltjes bound for R₄ and full-digit Arb balls for every certified sum (see `THEOREM.md`, Review repairs). The results are unchanged: U ≤ −1.963·10⁻⁴ (10^{215.281}) and U ≤ −0.0103711 (10^{807.41}).
 
 ## Layout
 

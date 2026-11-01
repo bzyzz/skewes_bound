@@ -16,9 +16,9 @@
  },
  "code_sha256": {
   "arb_recert.py": "1c1bb3e59478bbbe1748b254452ca1cb3491638801935df313eb1b8cd2807308",
-  "arb_combine.py": "69e70eae31399b9f62aee42193d1d90022df422f999c2dad59955f8a6bfb7f43",
-  "certio.py": "96786428dda627f221442e6ec60e4e64fcad823b8dfb973d7a869d2c199e0a26",
-  "error_bounds.py": "7ab5ae7ef4dd8d8c03b732fd34395653e6648ab291613b35449ba5da22318a35"
+  "arb_combine.py": "a8e7a0cbd8415eaf92763b19a9aba655e7fe4872e4bf807f10fd76ddc030e9ab",
+  "certio.py": "6eda1454be4706f7b0585b00094d3d6fdfc9e598dd73801a0d8a9c126995a989",
+  "error_bounds.py": "272ef66ec8fb4886691f80b9ec55d7e8a8bf828643e891721acc74609d1c1e1f"
  },
  "omega": "727.951335479",
  "eta1": "2.39e-7",
@@ -30,9 +30,9 @@
  "M_moll": 60,
  "cutoff_gap_lower": "[0.0100000000000000 +/- 1e-21]",
  "Phi_omega": "[1.00276268502615123725131528672 +/- 2.65e-30]",
- "S_K": "[1.00294 +/- 5.79e-6]",
- "J_K": "[0.00017 +/- 4.46e-6]",
- "J_K_lower_ball": "0.0001710560172796249389648438",
+ "S_K": "[1.0029359187717924046598694000000000 +/- 1.70e-6]",
+ "J_K": "[0.00017275661230087280273437500000000000 +/- 1.71e-6]",
+ "J_K_lower_ball": "[0.0001710560172796249389648438 +/- 5.00e-29]",
  "max_term_rad": 3.000164606618891e-10,
  "chunk_manifest_sha256": "404c8fd450bcce480e71a52a81c88ed89611513fbaa2c6bc499fbe870fa4f358",
  "elapsed_s_this_run": 43.7,

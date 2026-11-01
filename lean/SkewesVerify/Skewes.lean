@@ -14,7 +14,7 @@ The hypotheses are:
   to `3·10¹²`, Lemmas 2.1, 2.9, 3.2, 3.3):
   `∫ K(u - ω) Z(u) du ≤ -S_K / Φ(ω) + R₃ + R₄ + R₅`;
 * `hS`, `hR3`, `hR4`, `hR5` **[Arb]** `certification/s_certificate_arb.json`
-  (`S_K = [1.00292 ± 2.27e-6]`, lower end) and `certification/error_bounds.py` at
+  (`S_K = [1.00292055676525672724 ± 1.72e-6]`, lower end rounded down; re-aggregated 2026-10-31) and `certification/error_bounds.py` at
   `ω = 727.951335444`, `T₀ = 8·10⁷` (`R₃ = 5.5408…e-9`, `R₄,env = 1.32497…e-4`,
   `R₅ = 8.5026…e-20`). The hypotheses use the values of Table 6 (`5.55e-9`, `1.3250e-4`,
   `8.51e-20`), which are larger.
@@ -57,7 +57,7 @@ theorem skewes (Z : ℝ → ℝ) (S R₃ R₄ R₅ : ℝ)
     (hExpl : ∀ᵐ u, u ∈ P.window ω → -1 - Z u - skewesRem u ≤ f u)
     (hZint : IntegrableOn (fun u => P.K (u - ω) * Z u) (P.window ω))
     (hZ : ∫ u in P.window ω, P.K (u - ω) * Z u ≤ -S / Phi ω + R₃ + R₄ + R₅)
-    (hS : 100292 / 10 ^ 5 - 227 / 10 ^ 8 ≤ S)
+    (hS : 100291883676 / 10 ^ 11 ≤ S)
     (hR3 : R₃ ≤ 555 / 10 ^ 11)
     (hR4 : R₄ ≤ 13250 / 10 ^ 8)
     (hR5 : R₅ ≤ 851 / 10 ^ 22) :
@@ -79,10 +79,10 @@ theorem skewes (Z : ℝ → ℝ) (S R₃ R₄ R₅ : ℝ)
       P.integral_K_add hZint hrem, P.integral_K_const]
   -- `S / Φ(ω) ≥ S_lo / Φ(ω)`, and the numerical margin
   have hΦ : 0 < Phi ω := lt_trans one_pos (one_lt_Phi (by unfold ω; norm_num))
-  have hSΦ : (100292 / 10 ^ 5 - 227 / 10 ^ 8) / Phi ω ≤ S / Phi ω :=
+  have hSΦ : (100291883676 / 10 ^ 11) / Phi ω ≤ S / Phi ω :=
     div_le_div_of_nonneg_right hS hΦ.le
   have hmargin : 1 + 555 / 10 ^ 11 + 13250 / 10 ^ 8 + 851 / 10 ^ 22 + c <
-      (100292 / 10 ^ 5 - 227 / 10 ^ 8) / Phi ω := by
+      (100291883676 / 10 ^ 11) / Phi ω := by
     simp only [c, KParams.η₀, P, ω, Phi]; norm_num
   obtain ⟨u, hu, hpos⟩ := exists_pos_of_integral_pos (P.measurableSet_window ω)
     (fun u _ => P.K_shift_nonneg ω u) hExpl (by rw [hint]; linarith [neg_div (Phi ω) S])

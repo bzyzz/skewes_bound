@@ -47,6 +47,22 @@ def main():
         assert vp.is_finite(), f"non-finite at removable singularity pi for m={m}"
     v_pi_m1 = kappa_2m_hat_arb(pi, 1)
     assert v_pi_m1.contains(arb("0.5")), f"hat{{kappa}}_2(pi) = {v_pi_m1}, expected 0.5"
+    # Evenness, at and near the removable singularities +-k*pi and at generic points (review, 2026-10-30:
+    # the negative-frequency branch used to return -1/2 at -pi)
+    for m in [1, 2, 3, 40]:
+        for k in range(0, min(m, 3) + 2):
+            for x in (k * pi, k * pi + arb("1e-12"), k * pi + arb("0.3"), arb(pi * k, arb("1e-20"))):
+                vp, vm = kappa_2m_hat_arb(x, m), kappa_2m_hat_arb(-x, m)
+                assert vp.overlaps(vm), f"hat{{kappa}}_{2*m} not even at {x}: {vp} vs {vm}"
+    for m in [1, 2, 3]:
+        for k in range(1, m + 1):     # closed form: hat{kappa}_{2m}(k pi) = (-1)^(k-1) k^2 prod_{j != k} j^2/(j^2-k^2) / (2 k^2)
+            exact = arb((-1) ** (k - 1)) / 2
+            for j in range(1, m + 1):
+                if j != k:
+                    exact *= arb(j * j) / arb(j * j - k * k)
+            for s in (1, -1):
+                v = kappa_2m_hat_arb(s * k * pi, m)
+                assert v.overlaps(exact), f"hat{{kappa}}_{2*m}({s}*{k}pi) = {v}, expected {exact}"
 
     # 4. Hypothesis checks in total_error
     omega = arb("727.9513358")

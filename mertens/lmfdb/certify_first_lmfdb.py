@@ -25,7 +25,7 @@ sys.path.insert(0, os.path.join(HERE, "..", "..", "certification"))
 DATA = os.environ.get("LMFDB_ZETA_DIR", os.path.join(HERE, "data"))   # LMFDB/Platt files (download.sh)
 import platt
 from kernel_fast import Mollifier
-from certio import provenance, require, fail, exact_int, CertificationError
+from certio import ball, provenance, require, fail, exact_int, CertificationError
 from error_bounds import A_PT, bound_R4_envelope, bound_R4_stieltjes
 import certify_first as cf            # zero-cache readers for n <= N_ARB
 
@@ -67,7 +67,7 @@ def job_low(args):
                 break
             gs.append(arb(line.split("\t")[0].strip()))
     require(len(gs) == k, f"{path}: expected {k} zeros")
-    return term_sum(gs, P).str(40), gs[0].str(30), gs[-1].str(30), len(gs), None, None
+    return ball(term_sum(gs, P), 40), gs[0].str(30), gs[-1].str(30), len(gs), None, None
 
 
 def job_high(args):
@@ -75,7 +75,7 @@ def job_high(args):
     flint.ctx.dps = DPS
     z = np.load(path)
     gs = [arb(float(h)) + arb(float(lo)) + arb(0, float(r)) for h, lo, r in zip(z["hi"], z["lo"], z["rad"])]
-    return term_sum(gs, P).str(40), gs[0].str(30), gs[-1].str(30), len(gs), None, None
+    return ball(term_sum(gs, P), 40), gs[0].str(30), gs[-1].str(30), len(gs), None, None
 
 
 def job_lmfdb(args):
@@ -101,8 +101,8 @@ def job_lmfdb(args):
             next_after = (int(n), g.str(30))
             break
     if not gs:
-        return arb(0).str(40), None, None, 0, None, next_after, seam
-    return term_sum(gs, P).str(40), gs[0].str(30), gs[-1].str(30), len(gs), first_idx, next_after, seam
+        return ball(arb(0), 40), None, None, 0, None, next_after, seam
+    return ball(term_sum(gs, P), 40), gs[0].str(30), gs[-1].str(30), len(gs), first_idx, next_after, seam
 
 
 def main():
@@ -172,12 +172,12 @@ def main():
     cert = provenance(P, CODE)
     cert.update({"omega": omega_s, "eta1": eta1_s, "delta": delta_s, "M_moll": M, "lam": lam_s, "T0": T0_s,
                  "N_T0": N, "N_ours": N_ARB, "N_lmfdb": N - N_ARB, "next_zero_above_T0": nxt[1],
-                 "S_M": S.str(20, radius=True), "R4_envelope": r4_env.str(10, radius=False),
-                 "R4_stieltjes": r4_st.str(10, radius=False), "R5": r5.str(6, radius=False),
-                 "R_small": r_small.str(6, radius=False), "U": U.str(15, radius=True),
-                 "U_upper": U.upper().str(10, radius=False),
-                 "u_lo": u_lo.lower().str(16, radius=False), "u_hi": u_hi.upper().str(16, radius=False),
-                 "log10_x_upper": (u_hi/arb(10).log()).upper().str(12, radius=False),
+                 "S_M": ball(S, 30), "R4_envelope": ball(r4_env, 30),
+                 "R4_stieltjes": ball(r4_st, 30), "R5": ball(r5, 30),
+                 "R_small": ball(r_small, 30), "U": ball(U, 30),
+                 "U_upper": ball(U.upper(), 30),
+                 "u_lo": ball(u_lo.lower(), 30), "u_hi": ball(u_hi.upper(), 30),
+                 "log10_x_upper": ball((u_hi/arb(10).log()).upper(), 30),
                  "elapsed_s": round(time.time() - t0, 1)})
     print(json.dumps(cert, indent=2))
     json.dump(cert, open(os.path.join(HERE, f"first_cert_lmfdb_T{T0_s}.json"), "w"), indent=2)

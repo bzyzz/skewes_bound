@@ -10,7 +10,7 @@ Notation: $\Xi := \min\{x \ge 2 : \pi(x) > \mathrm{li}(x)\}$; nontrivial zeros o
 |---|---|
 | Main theorem: $\Xi < e^{727.951335596}$ ($T_0 = 8\cdot 10^7$) | **certified in Arb**: all 195,565,267 zeros isolated with Arb (`certification/arb_recert.py`, `arb_combine.py`, `s_certificate_arb.json`) |
 | $\Xi < e^{727.951337382}$ ($T_0 = 6.8\cdot 10^6$) | certified in Arb |
-| $\theta(x) > x$ for some $x \in [e^{727.9513323698}, e^{727.9513328538}]$ ($T_0 = 5\cdot 10^7$) | certified in Arb (zeros above $6.8\cdot 10^6$ from the Arb re-isolation) |
+| $\theta(x) > x$ for some $x \in [e^{727.9513324512}, e^{727.9513327552}]$ ($T_0 = 8\cdot 10^7$) | certified in Arb (zeros above $6.8\cdot 10^6$ from the Arb re-isolation) |
 | Smith refinement: $\Xi < e^{727.951335402030}$ | conditional on one value tabulated in Smith (2016), Table 4 |
 
 ## 1. The two-scale kernel [derived]
@@ -38,7 +38,7 @@ $$J_K = -1 + \frac{S_K}{\Phi(\omega)}, \qquad S_K(\omega, T_0) = -\sum_{0 < |\ga
 The error terms are implemented in `certification/error_bounds.py`:
 - $R_2$: prime powers and $\log 2$;
 - $R_3$: $u$-variation and the $\mathrm{li}$ remainder;
-- $R_4$: on-line zeros $T_0 < |\gamma| \le A$, either the direct envelope from Lehman's Lemma 1 or the Stieltjes refinement;
+- $R_4$: on-line zeros $T_0 < |\gamma| \le A$, either the direct envelope from Lehman's Lemma 1 or the Stieltjes refinement (paper, Lemma lem:R4st). The Stieltjes form uses the specific majorant $H = \sum_m \lambda_m \Phi_{2m}$ in its variation terms, which bounds both $|R_{\rm core}|$ and $|R_{\rm core}'|$ (corrected 2026-10-30 after review; an arbitrary decreasing envelope does not control the variation);
 - $R_5$: zeros with $|\gamma| > A$.
 
 Inputs:
@@ -61,7 +61,11 @@ Input: [cited] Platt–Trudgian (2016), (6) and (9), the latter being $|\theta(x
 Assume Platt's Gaussian sum $S_1 + S_2 = 1.00288049783641096204 \pm 10^{-20}$ at $\omega = 727.951335401$, $\alpha = 4.5\cdot 10^{19}$, $T = 30{,}610{,}046{,}000$ (Smith 2016, Table 4). With the asymmetric kernel $G_\alpha\cdot(\mathbf{1}_{[-\eta_L, \eta_R]} * \psi_\delta)$, $\eta_L = 1.00\cdot 10^{-9}$, $\eta_R = 0.725\cdot 10^{-9}$, $\delta = 0.305\cdot 10^{-9}$, $M = 190$, the RH-dependent steps of Smith's Theorem 4.1 are replaced as follows:
 - the zeros with $T < |\gamma| \le A$ are on the line by Platt–Trudgian (2021);
 - $-\frac12\pi(x^{1/2})$ is bounded through the explicit formula for $\Pi(x^{1/2})$;
-- the zeros with $|\gamma| > A$ are bounded by 380-fold integration by parts.
+- the zeros with $|\gamma| > A$ are bounded by 380-fold integration by parts, with the two transition strips bounded separately and a factor $2^{380}$ for the half-frequency term $\mathrm{li}(e^{\rho u/2})$;
+- the bias $C$ is enclosed by a direct Arb evaluation of $w e^{-w}\mathrm{Ei}(w)$ over the window;
+- the spectral tail ($|\gamma| > T$), the $u$-variation, the secondary term and the prime powers are bounded directly (Backlund bound, absolute first moment); under RH the zeros above $A$ also enter the spatial tails and the secondary term.
+
+(These repairs follow the referee report and `paper/proof_audit.md`, 2026-10-30. The margins are $1.2510\cdot10^{-5}$ unconditionally and $1.1191\cdot10^{-5}$ under RH.)
 
 This gives $\Xi < e^{727.951335402030}$ unconditionally and $\Xi < e^{727.951335401708}$ under RH. Implemented in `certification/certify_smith_unconditional.py`.
 
@@ -73,11 +77,11 @@ This gives $\Xi < e^{727.951335402030}$ unconditionally and $\Xi < e^{727.951335
 | $N(T_0)$ | 118,488,123 | 195,565,267 | 195,565,267 | 13,955,181 | $1.04\cdot 10^{11}$ |
 | $\omega$ | 727.951335479 | 727.951335444 | 727.951335441 | 727.9513329060 | 727.951335401 |
 | $\eta_1$; $\delta$ ($M$) | $2.39\cdot 10^{-7}$; $2\cdot 10^{-9}$ (60) | $1.50\cdot 10^{-7}$; $2\cdot 10^{-9}$ (60) | $1.50\cdot 10^{-7}$; $2\cdot 10^{-9}$ (60) | $1.618\cdot 10^{-6}$; $2\cdot 10^{-9}$ (60) | see §4 |
-| Margin, Arb-only zeros (`*_arb.json`) | $3.369\cdot 10^{-5}$ | $2.322\cdot 10^{-5}$ | $2.021\cdot 10^{-5}$ (St.) | $5.11\cdot 10^{-6}$ (St.) | $1.249\cdot 10^{-5}$ |
+| Margin, Arb-only zeros (`*_arb.json`) | $3.369\cdot 10^{-5}$ | $2.321\cdot 10^{-5}$ | $2.019\cdot 10^{-5}$ (St.) | $5.04\cdot 10^{-6}$ (St.) | $1.2510\cdot 10^{-5}$ |
 | Margin, float zeros above $6.8\cdot10^6$ (comparison) | $3.273\cdot 10^{-5}$ | $2.178\cdot 10^{-5}$ | $1.877\cdot 10^{-5}$ | — | — |
 | Upper end $u_{\mathrm{hi}}$ | 727.951335720 | **727.951335596** | 727.951335593 | 727.951334526 | 727.951335402030 |
 
-The Arb-only certificates (`certification/s_cert_T5e7_arb.json`, `s_certificate_arb.json`, `s_cert_T8e7_st_arb.json`) replace S_K by the sum over Arb-isolated zeros. `arb_combine.py` checks that the batches cover n = 1, …, N(8·10⁷) contiguously and in increasing order, and certifies N(T₀) with `arb_zeta_nzeros` together with γ_N < T₀ < γ_{N+1}. `check_theorem.py <file>` then verifies each certificate.
+The Arb-only certificates (`certification/s_cert_T5e7_arb.json`, `s_certificate_arb.json`, `s_cert_T8e7_st_arb.json`) replace S_K by the sum over Arb-isolated zeros. `arb_combine.py` checks that the batches cover n = 1, …, N(8·10⁷) contiguously and in increasing order, and certifies N(T₀) with `arb_zeta_nzeros` together with γ_N < T₀ < γ_{N+1}. `check_theorem.py <file>` then verifies each certificate: it recomputes $J_K$ from the stored $S_K$ (written with all digits) and takes its lower endpoint itself; it does not use the certificate's `J_K_lower_ball`.
 
 ## 6. Prime number race modulo 24
 
