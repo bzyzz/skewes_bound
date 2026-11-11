@@ -83,16 +83,16 @@ Parameters:
 |---|---|
 | S_M(ω, T₀) | −1.01044645655603 ± 8.2·10⁻¹⁵ |
 | 1 + 3ε | 1.0000000046 |
-| R₄ (min of envelope 9.84·10⁻⁵ and Stieltjes 7.50·10⁻⁵) | 7.495·10⁻⁵ |
+| R₄ (min of envelope 9.68·10⁻⁵ and Stieltjes 7.34·10⁻⁵, 65,536 cells) | 7.337·10⁻⁵ |
 | R₅ | 6.8·10⁻¹⁷⁴ |
 | R_small | 4.1·10⁻¹³⁵ |
-| **U** | **−0.0103715 < 0** |
+| **U** | **−0.0103730 < 0** |
 
 Window: log x ∈ [1859.129042158, 1859.129060642], so log₁₀ x < 807.409492183.
 
 ## 6. Heuristics
 
-- The true first sign change is probably near u ≈ 495.7028 (x ≈ 10^{215.28}). That is the region where Büthe (2015) certified the first sign change for Mertens' second and third theorems.
+- The true first sign change is probably near u ≈ 495.7028 (x ≈ 10^{215.28}). That is the region where Büthe (2015) certified a sign change for Mertens' second theorem (he does not treat the third).
 - The full-weight sum there is: +0.00267 with zeros to 1.3·10⁶, +0.00155 with zeros to 6.8·10⁶, and −0.00018 with all 195.6M Arb zeros to 8·10⁷. The negative part is only about 3·10⁻⁸ wide.
 - The first theorem is harder than the second, because the second theorem's threshold is lower by 2/u (≈ 0.004 at u = 495.7).
 - No other region with u < 1859 is negative in the wide scan (`scan/wide.py`, `scan/refine.py`, zeros to 1.3·10⁶).
@@ -126,7 +126,7 @@ Open items:
 
 ## 8. Sharper result with Platt's zeros (2026-10-25)
 
-**Theorem 2.** Δ₁(x) < 0 for some x with log x ∈ [495.7028331177, 495.7028331467]. Hence the first sign change of Δ₁ occurs before 10^{215.281005099}. This is below Büthe's 2·10²¹⁵ = 10^{215.301} for the second and third theorems.
+**Theorem 2.** Δ₁(x) < 0 for some x with log x ∈ [495.7028331177, 495.7028331467]. Hence the first sign change of Δ₁ occurs before 10^{215.281005099}. Büthe's interval for the second theorem is log x ∈ [495.702833109, 495.702833165], which contains ours; e^{495.702833165} = 1.9099·10²¹⁵. His inequality (8.1) also implies Δ₁ < 0 in his interval (see the paper's remark), so the two bounds are of the same size and ours is an independent proof.
 
 **Inputs.**
 - Our 195,565,267 Arb zeros with γ < 8·10⁷.
@@ -147,10 +147,10 @@ Open items:
 | Term | Value |
 |---|---|
 | S_M | −1.0002446 ± 4.0·10⁻⁷ |
-| R₄ (Stieltjes) | 4.787·10⁻⁵ |
+| R₄ (Stieltjes, 65,536 cells) | 4.713·10⁻⁵ |
 | R₅ | 3.9·10⁻³⁸ |
 | R_small | 2.0·10⁻³⁶ |
-| **U** | **≤ −1.963·10⁻⁴** |
+| **U** | **≤ −1.970·10⁻⁴** |
 
 The margin is thin: about 4 times R₄, and 44 times the radius of U. It matches the floating-point prediction (min U = −1.97·10⁻⁴). Code: `lmfdb/certify_first_lmfdb.py`, `platt.c`, `platt.py`, `kernel_fast.py`. **Independent review (2026-10-25)**, by a fresh agent without access to these conclusions, found no error that affects U < 0.
 - **Decoder:** bit-exact against an independent pure-Python decoder on 4 files, including the file at the 8·10⁷ seam and the file containing T₀. All 440 md5 sums match. The files have no trailing bytes, the t₀ values are exact integers, and blocks and files are contiguous from 78,146,000 to 1,000,046,000.
@@ -172,3 +172,5 @@ The regenerated certificate has U ≤ −1.956·10⁻⁴ and X < 10^{215.2810050
 - all certified sums, including the per-worker partial sums, written as Arb balls with every digit (`certio.ball`). This shrank the radius of S_M from 5.7·10⁻⁶ to 4.0·10⁻⁷.
 
 Result: U ≤ −1.963·10⁻⁴, same window, X < 10^{215.281005099}. The 10^{807.41} certificate was regenerated in the same way (U ≤ −0.0103711; R₄ = 7.538·10⁻⁵).
+
+**Regenerated 2026-11-11** with R₄ on 65,536 cells (was 8,192), after the LMFDB data link was repaired: U ≤ −1.9705·10⁻⁴ (R₄ = 4.713·10⁻⁵, 88 min on 16 workers) and U ≤ −0.0103730 (R₄ = 7.337·10⁻⁵). Windows and bounds unchanged.

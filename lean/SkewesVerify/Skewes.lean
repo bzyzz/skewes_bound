@@ -15,12 +15,12 @@ The hypotheses are:
   `∫ K(u - ω) Z(u) du ≤ -S_K / Φ(ω) + R₃ + R₄ + R₅`;
 * `hS`, `hR3`, `hR4`, `hR5` **[Arb]** `certification/s_certificate_arb.json`
   (`S_K = [1.00292055676525672724 ± 1.72e-6]`, lower end rounded down; re-aggregated 2026-10-31) and `certification/error_bounds.py` at
-  `ω = 727.951335444`, `T₀ = 8·10⁷` (`R₃ = 5.5408…e-9`, `R₄,env = 1.32497…e-4`,
-  `R₅ = 8.5026…e-20`). The hypotheses use the values of Table 6 (`5.55e-9`, `1.3250e-4`,
+  `ω = 727.951335444`, `T₀ = 8·10⁷` (`R₃ = 5.5408…e-9`, `R₄,env = 1.30261…e-4` on 65,536 cells,
+  `R₅ = 8.5026…e-20`). The hypotheses use the values of Table 6 (`5.55e-9`, `1.3027e-4`,
   `8.51e-20`), which are larger.
 
 Lean computes `Φ(ω)` exactly and bounds the remainder `rem` itself (`skewesRem_le`), so the
-paper's `R₂` is not needed. Lean does not prove the `2.75·10¹⁵³` consecutive integers, which
+paper's `R₂` is not needed. Lean does not prove the `3.01·10¹⁵³` consecutive integers, which
 rely on [SD10, Theorem 6.2].
 -/
 
@@ -59,7 +59,7 @@ theorem skewes (Z : ℝ → ℝ) (S R₃ R₄ R₅ : ℝ)
     (hZ : ∫ u in P.window ω, P.K (u - ω) * Z u ≤ -S / Phi ω + R₃ + R₄ + R₅)
     (hS : 100291883676 / 10 ^ 11 ≤ S)
     (hR3 : R₃ ≤ 555 / 10 ^ 11)
-    (hR4 : R₄ ≤ 13250 / 10 ^ 8)
+    (hR4 : R₄ ≤ 13027 / 10 ^ 8)
     (hR5 : R₅ ≤ 851 / 10 ^ 22) :
     ∃ x : ℝ, log x ∈ Icc (727951335292 / 10 ^ 9) (727951335596 / 10 ^ 9) ∧ li x < piR x ∧
       2 ≤ x ∧ x < 1397166434 / 10 ^ 9 * 10 ^ 316 := by

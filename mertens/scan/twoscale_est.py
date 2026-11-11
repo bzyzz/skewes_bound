@@ -32,7 +32,7 @@ for T0 in [2e4, 5e4, 1e5, 3e5, 1.3e6]:
             lib.scan(*[p(v) for v in arrs], len(g), 0.0, float(uc - half), float(h), npts, blk, p(bmin), p(bu), p(full))
             S = 1 + full
             lamA = [arb(str(l)) for l in lam]
-            R4 = float(eb.bound_R4(arb(uc), arb(eta1), arb(T0), *lamA).mid())
+            R4 = float(eb.bound_R4(arb(uc), arb(eta1), arb(T0), *lamA, n_sub=8192).mid())
             crit = S + R4 + 1e-8
             k = crit.argmin(); neg = np.nonzero(crit < 0)[0]
             u = uc - half + h*np.arange(npts); eta0 = eta1 + delta

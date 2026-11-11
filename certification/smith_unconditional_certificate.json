@@ -16,7 +16,7 @@
   },
   "code_sha256": {
     "certify_smith_unconditional.py": "bdb37566201b4c73f53c526c2a836e46d8e751669e0e3fca088ac443f9ed724f",
-    "certio.py": "6eda1454be4706f7b0585b00094d3d6fdfc9e598dd73801a0d8a9c126995a989"
+    "certio.py": "ae776ff19de75cacfbc2a50254f82fcf4995b07f79e43ef2df3ba41f71cc3fe7"
   },
   "assumption": "S1 + S2 = 1.00288049783641096204 +- 1e-20 (Platt, reported in Smith 2016, Table 4)",
   "omega": "727.951335401",

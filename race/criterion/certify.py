@@ -2,8 +2,10 @@
 """Certify U(omega) < 0 for the race criterion in Arb, using the Turing-certified zeros.
 
 usage: certify.py T0 omega eta1 delta M lam1,lam2,lam3 nproc
-Reads data/arb_<q>_<n>/certified.npz and data/arb_<q>_<n>/turing_<q>_<n>.json. Writes criterion/cert_<tag>.json.
+Reads data/arb_<q>_<n>/certified.npz, turing_<q>_<n>.json and endpoints_<q>_<n>.json (both bound to the NPZ by its
+SHA-256). Writes criterion/cert_<tag>.json.
 """
+import hashlib
 import json
 import math
 import os
@@ -23,16 +25,33 @@ CHUNK = 20000
 
 
 def zero_balls(q, n, T0):
-    d = np.load(os.path.join(ROOT, "data", f"arb_{q}_{n}", "certified.npz"))
-    tj = json.load(open(os.path.join(ROOT, "data", f"arb_{q}_{n}", f"turing_{q}_{n}.json")))
-    rc.require(len(d["fail"]) == 0, f"{q}.{n}: uncertified zeros present")
-    rc.require(tj["L_positive_half_to_two"], f"{q}.{n}: L > 0 on [1/2,2] not certified")
-    cp = [c for c in tj["checkpoints"] if c.get("ok") and abs(c["T"] - T0) < 1e-9]
+    path = os.path.join(ROOT, "data", f"arb_{q}_{n}", "certified.npz")
+    with np.load(path, allow_pickle=False) as data:
+        rc.require(int(data["q"]) == q and int(data["n"]) == n, "Wrong zero-cache character")
+        rc.require(len(data["fail"]) == 0, f"{q}.{n}: uncertified zeros present")
+        lo, hi = data["lo"].copy(), data["hi"].copy()
+    rc.require(lo.ndim == hi.ndim == 1 and lo.shape == hi.shape, "Invalid interval shapes")
+    rc.require(np.all(np.isfinite(lo)) and np.all(np.isfinite(hi)) and np.all(lo > 0)
+               and np.all(lo < hi) and np.all(hi[:-1] < lo[1:]), "Invalid intervals")
+    with open(os.path.join(ROOT, "data", f"arb_{q}_{n}", f"turing_{q}_{n}.json")) as handle:
+        tj = json.load(handle)
+    with open(path, "rb") as handle:
+        digest = hashlib.sha256(handle.read()).hexdigest()
+    rc.require(tj.get("input_sha256") == digest, "Turing certificate not bound to current NPZ; rerun turing.py")
+    # every stored interval has been re-evaluated at both endpoints from this very file (zeros/verify_endpoints.py)
+    with open(os.path.join(ROOT, "data", f"arb_{q}_{n}", f"endpoints_{q}_{n}.json")) as handle:
+        ej = json.load(handle)
+    rc.require(ej.get("input_sha256") == digest and ej.get("q") == q and ej.get("n") == n,
+               "Endpoint transcript not bound to current NPZ; rerun verify_endpoints.py")
+    rc.require(ej.get("all_ok") is True and ej.get("n_failures") == 0 and ej.get("count") == len(lo)
+               and ej.get("sign_changes") == len(lo), "Endpoint transcript does not cover every interval")
+    rc.require(tj.get("q") == q and tj.get("n") == n, "Wrong Turing character")
+    rc.require(tj.get("all_ok") and tj["L_positive_half_to_two"], "Incomplete Turing certificate")
+    cp = [c for c in tj["checkpoints"] if c.get("ok") and c["T"] == T0]
     rc.require(len(cp) == 1, f"{q}.{n}: no Turing certificate at T0 = {T0}")
-    lo, hi = d["lo"], d["hi"]
     sel = hi <= T0
     rc.require(int(sel.sum()) == cp[0]["F_T"], f"{q}.{n}: zero count mismatch")
-    rc.require(not np.any((lo < T0) & (hi > T0)), "a zero interval straddles T0")
+    rc.require(not np.any((lo <= T0) & (hi >= T0)), "A zero interval touches or straddles T0")
     return lo[sel], hi[sel], cp[0]["F_T"]
 
 
@@ -56,6 +75,27 @@ def work(args):
         s3 += 2/(g*g*g)
     # arb is not picklable; Arb's decimal ball string encloses the ball, and parsing it back stays enclosing
     return S.str(40), s2.str(40), s3.str(40)
+
+
+def decimal_ceiling(value, places=4):
+    """Decimal string with `places` digits that is >= the upper endpoint of the positive ball `value`.
+    The endpoint is an exact binary number m * 2^e and is rounded up in integer arithmetic. (A format like
+    f"{x:.4f}" rounds to nearest and can print a number below the bound it stands for.)"""
+    m, e = (int(v) for v in value.upper().man_exp())
+    num = m * 10 ** places
+    c = num << e if e >= 0 else -((-num) >> -e)
+    rc.require(c > 0, "decimal_ceiling expects a positive bound")
+    return f"{c // 10 ** places}.{c % 10 ** places:0{places}d}"
+
+
+def input_manifest(chars):
+    result = {}
+    for q, n, *_ in chars:
+        folder = os.path.join(ROOT, "data", f"arb_{q}_{n}")
+        for name in ("certified.npz", f"turing_{q}_{n}.json", f"endpoints_{q}_{n}.json"):
+            with open(os.path.join(folder, name), "rb") as handle:
+                result[f"{q}.{n}/{name}"] = hashlib.sha256(handle.read()).hexdigest()
+    return result
 
 
 def main():
@@ -86,13 +126,17 @@ def main():
     out = dict(T0=T0, omega=omega_s, eta1=eta1_s, delta=delta_s, M=M, lam=lam_s, chars=per,
                two_sum_S=S_tot.str(15), errors={k: v.str(10) for k, v in err.items()}, U=U.str(15), certified=ok,
                u_lo=(arb(omega_s) - eta0).str(15), u_hi=u_hi.str(15),
-               bound_log10=float((u_hi/arb(10).log()).upper()) if ok else None)
+               bound_log10=decimal_ceiling(u_hi/arb(10).log()) if ok else None,
+               input_sha256=input_manifest(rc.CHARS))
     tag = f"T{int(T0)}_w{omega_s}"
     json.dump(out, open(os.path.join(HERE, f"cert_{tag}.json"), "w"), indent=1)
     print(json.dumps(out, indent=1))
     if ok:
         print(f"CERTIFIED: pi(x;24,11) < pi(x;24,1) for some x with log x in [{out['u_lo']}, {out['u_hi']}]; "
-              f"first sign change < 10^{out['bound_log10']:.4f}")
+              f"first sign change < 10^{out['bound_log10']}")
+
+    if not ok:
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

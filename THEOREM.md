@@ -77,8 +77,8 @@ This gives $\Xi < e^{727.951335402030}$ unconditionally and $\Xi < e^{727.951335
 | $N(T_0)$ | 118,488,123 | 195,565,267 | 195,565,267 | 13,955,181 | $1.04\cdot 10^{11}$ |
 | $\omega$ | 727.951335479 | 727.951335444 | 727.951335441 | 727.9513329060 | 727.951335401 |
 | $\eta_1$; $\delta$ ($M$) | $2.39\cdot 10^{-7}$; $2\cdot 10^{-9}$ (60) | $1.50\cdot 10^{-7}$; $2\cdot 10^{-9}$ (60) | $1.50\cdot 10^{-7}$; $2\cdot 10^{-9}$ (60) | $1.618\cdot 10^{-6}$; $2\cdot 10^{-9}$ (60) | see §4 |
-| Margin, Arb-only zeros (`*_arb.json`) | $3.369\cdot 10^{-5}$ | $2.321\cdot 10^{-5}$ | $2.019\cdot 10^{-5}$ (St.) | $5.04\cdot 10^{-6}$ (St.) | $1.2510\cdot 10^{-5}$ |
-| Margin, float zeros above $6.8\cdot10^6$ (comparison) | $3.273\cdot 10^{-5}$ | $2.178\cdot 10^{-5}$ | $1.877\cdot 10^{-5}$ | — | — |
+| Margin, Arb-only zeros (`*_arb.json`), $R_4$ on 65,536 cells | $3.606\cdot 10^{-5}$ | $2.544\cdot 10^{-5}$ | $2.293\cdot 10^{-5}$ (St.) | $1.11\cdot 10^{-5}$ (St.) | $1.2510\cdot 10^{-5}$ |
+| Margin, float zeros above $6.8\cdot10^6$ (comparison) | $3.510\cdot 10^{-5}$ | $2.290\cdot 10^{-5}$ | $2.149\cdot 10^{-5}$ | — | — |
 | Upper end $u_{\mathrm{hi}}$ | 727.951335720 | **727.951335596** | 727.951335593 | 727.951334526 | 727.951335402030 |
 
 The Arb-only certificates (`certification/s_cert_T5e7_arb.json`, `s_certificate_arb.json`, `s_cert_T8e7_st_arb.json`) replace S_K by the sum over Arb-isolated zeros. `arb_combine.py` checks that the batches cover n = 1, …, N(8·10⁷) contiguously and in increasing order, and certifies N(T₀) with `arb_zeta_nzeros` together with γ_N < T₀ < γ_{N+1}. `check_theorem.py <file>` then verifies each certificate: it recomputes $J_K$ from the stored $S_K$ (written with all digits) and takes its lower endpoint itself; it does not use the certificate's `J_K_lower_ball`.

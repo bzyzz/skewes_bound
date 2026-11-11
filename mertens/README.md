@@ -4,7 +4,7 @@ Let $\Delta_1(x) = \sum_{p\le x} (\log p)/p - \log x - E$, where $E = -\gamma - 
 
 - Rosser and Schoenfeld showed that $\Delta_1(x) > 0$ for $x \le 10^8$.
 - Lay (2015) proved that $\Delta_1$ changes sign infinitely often.
-- No explicit bound for the first sign change was known. This is Problem 14 of the comparative prime number theory problem list (PIMS 2024).
+- No explicit bound for the first sign change had been stated (but see the note on Büthe below). This is Problem 14 of the comparative prime number theory problem list (PIMS 2024).
 
 This directory certifies such a bound with the two-scale kernel of the main repository. The statements, the derivation and the reviews are in [`THEOREM.md`](THEOREM.md).
 
@@ -17,7 +17,7 @@ This directory certifies such a bound with the two-scale kernel of the main repo
 | Quadratic fields (Problem 8) | the first integer $x$ with $\Delta_K(x) < 0$ is $28$ for $\mathbb{Q}(\sqrt5)$, $16$ for $\mathbb{Q}(\sqrt{13})$, and at most $148$ for every field with $\lvert D\rvert \le 300$ | none (direct evaluation in Arb) | `scan/fields_first_negative.json` |
 
 **For comparison:**
-- Büthe (Acta Arith. 2015) proved that the first sign changes in Mertens' second and third theorems occur before $e^{495.702833165}$.
+- Büthe (Acta Arith. 2015) proved that the first sign change in Mertens' second theorem occurs before $e^{495.702833165}$ (he does not treat the first or third theorem). His proof uses the Logan kernel, which is compactly supported, in Lehman's method. His numerical inequality also implies a sign change of Δ₁ in the same interval, although the paper does not say so.
 - The main result lies in the same region and is slightly lower. The first theorem is harder there: the same zero sum must exceed $1$ rather than $1 - 2/\log x$, and with the zeros below $10^9$ it does so only on an interval of width $2.3\cdot10^{-8}$ in $\log x$.
 
 ## Reproducing
@@ -47,7 +47,7 @@ The checks made on Platt's data:
 
 An independent review also checked the decoder (`lmfdb/platt.c`) bit for bit against a separate pure-Python decoder on four files, and 826 zeros against Arb's `acb_dirichlet_zeta_zeros`.
 
-**Provenance.** Both certificates were regenerated on 2026-10-31, after the referee report, with the current code, so all recorded SHA-256 hashes are current: the corrected Stieltjes bound for R₄ and full-digit Arb balls for every certified sum (see `THEOREM.md`, Review repairs). The results are unchanged: U ≤ −1.963·10⁻⁴ (10^{215.281}) and U ≤ −0.0103711 (10^{807.41}).
+**Provenance.** Both certificates were regenerated on 2026-11-11 with the current code, so all recorded SHA-256 hashes are current: the corrected Stieltjes bound for R₄ on 65,536 cells, full-digit Arb balls for every certified sum, and checked zero-batch files (see `THEOREM.md`, Review repairs). The windows and bounds are unchanged: U ≤ −1.9705·10⁻⁴ (10^{215.281}) and U ≤ −0.0103730 (10^{807.41}). The LMFDB files are read through `lmfdb/data`, a link to the local download; `download.sh` fetches them and checks every MD5 sum.
 
 ## Layout
 

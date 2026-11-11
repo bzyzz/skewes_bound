@@ -276,4 +276,37 @@ theorem abs_kappaHat_le_envelope (m : ℕ) {ξ : ℝ} (hξ : (m : ℝ) * π < ξ
   · have := hk k hkm
     exact div_nonneg (by positivity) (by linarith)
 
+
+/-! ### An everywhere-defined real-frequency interface
+
+The rational product `kappaHat` is used only on `Regular`. Its totalized value
+at zero is not the Fourier transform. This integral definition supplies the
+actual transform at every real frequency, including the removable points.
+-/
+
+noncomputable def kappaHatExtended (m : ℕ) (ξ : ℝ) : ℝ :=
+  ∫ x, kappa m x * cos (ξ * x)
+
+theorem kappaHatExtended_eq (m : ℕ) {ξ : ℝ} (h : Regular m ξ) :
+    kappaHatExtended m ξ = kappaHat m ξ := integral_kappa_mul_cos m h
+
+theorem kappaHatExtended_zero (m : ℕ) : kappaHatExtended m 0 = 1 := by
+  simp [kappaHatExtended, integral_kappa]
+
+theorem FT_kappa_extended (m : ℕ) (ξ : ℝ) :
+    FT (kappa m) ξ = (kappaHatExtended m ξ : ℂ) := by
+  rw [FT_eq (integrable_kappa m), integral_kappa_mul_sin]
+  simp [kappaHatExtended]
+
+theorem abs_kappaHatExtended_le_one (m : ℕ) (ξ : ℝ) :
+    |kappaHatExtended m ξ| ≤ 1 := by
+  have hint := integrable_mul_trig (integrable_kappa m) (fun x => cos (ξ * x)) (by fun_prop)
+    fun x => abs_cos_le_one _
+  rw [kappaHatExtended, ← integral_kappa m]
+  refine (abs_integral_le_integral_abs).trans (integral_mono hint.abs (integrable_kappa m) ?_)
+  intro x
+  simp only
+  rw [abs_mul, abs_of_nonneg (kappa_nonneg m x)]
+  exact mul_le_of_le_one_right (kappa_nonneg m x) (abs_cos_le_one _)
+
 end SkewesVerify

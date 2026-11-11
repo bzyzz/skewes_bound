@@ -141,11 +141,19 @@ def bound_R3(omega, eta0, A=A_PT):
     return (term_y + term_li).upper()
 
 
-def bound_R4_envelope(omega, eta1, T0, lam1, lam2, lam3, n_sub=8192, xi_tail_val=160):
+# Number of cells on [eta1*T0, xi_tail] in the step bounds for R4. Every cell bound is an upper bound, so any
+# n_sub gives a valid R4; finer cells only tighten it (8192 -> 65536 lowers R4 by about 2e-6 at T0 = 8e7).
+N_SUB = 65536
+
+
+def bound_R4_envelope(omega, eta1, T0, lam1, lam2, lam3, n_sub=N_SUB, xi_tail_val=160):
     """
     Conservative R4 bound: applies Lemma 2.7 of STD (2015) directly to the nonincreasing
     step-envelope majorant Psi(eta1 * t) of |hat{kappa}_core(eta1 * t)|.
     """
+    require(omega > 0 and eta1 > 0 and T0 > 2 * arb.pi() * arb(1).exp(), "R4 requires omega > 0, eta1 > 0 and T0 > 2 pi e")
+    require(lam1 >= 0 and lam2 >= 0 and lam3 >= 0, "R4 weights must be nonnegative")
+    require(isinstance(n_sub, int) and n_sub > 0, "n_sub must be a positive integer")
     pi = arb.pi()
     xi_T = eta1 * T0
     require(xi_T > 3 * pi, "xi_T = eta1 * T0 must exceed 3*pi")
@@ -194,7 +202,7 @@ def bound_R4_envelope(omega, eta1, T0, lam1, lam2, lam3, n_sub=8192, xi_tail_val
     return (int_main + int_rem + term_b).upper()
 
 
-def bound_R4_stieltjes(omega, eta1, T0, lam1, lam2, lam3, n_sub=8192, xi_tail_val=160):
+def bound_R4_stieltjes(omega, eta1, T0, lam1, lam2, lam3, n_sub=N_SUB, xi_tail_val=160):
     """
     Sharp R4 bound via Stieltjes integration (Lemma lem:R4st of the paper; corrected after review, 2026-10-30).
 
@@ -208,6 +216,9 @@ def bound_R4_stieltjes(omega, eta1, T0, lam1, lam2, lam3, n_sub=8192, xi_tail_va
     The previous version used an arbitrary decreasing step envelope of |R_core| in the error terms; such an envelope
     need not control the variation of f (review item 1). Using H itself fixes this (R4 grows by ~9e-9 at T0 = 8e7).
     """
+    require(omega > 0 and eta1 > 0 and T0 > 2 * arb.pi() * arb(1).exp(), "R4 requires omega > 0, eta1 > 0 and T0 > 2 pi e")
+    require(lam1 >= 0 and lam2 >= 0 and lam3 >= 0, "R4 weights must be nonnegative")
+    require(isinstance(n_sub, int) and n_sub > 0, "n_sub must be a positive integer")
     pi = arb.pi()
     xi_T = eta1 * T0
     require(xi_T > 3 * pi, "xi_T = eta1 * T0 must exceed 3*pi")
@@ -249,7 +260,7 @@ def bound_R4_stieltjes(omega, eta1, T0, lam1, lam2, lam3, n_sub=8192, xi_tail_va
     return (int_main + int_rem + int_tv_sin + term_b).upper()
 
 
-def bound_R4(omega, eta1, T0, lam1, lam2, lam3, n_sub=8192, xi_tail_val=160):
+def bound_R4(omega, eta1, T0, lam1, lam2, lam3, n_sub=N_SUB, xi_tail_val=160):
     """Return min(bound_R4_envelope, bound_R4_stieltjes) -- both are rigorous upper bounds."""
     b_env = bound_R4_envelope(omega, eta1, T0, lam1, lam2, lam3, n_sub=n_sub, xi_tail_val=xi_tail_val)
     b_st = bound_R4_stieltjes(omega, eta1, T0, lam1, lam2, lam3, n_sub=n_sub, xi_tail_val=xi_tail_val)
@@ -274,15 +285,15 @@ def bound_R5(omega, eta0, delta, M_moll=60, A=A_PT):
     return log_R5.exp().upper()
 
 
-def total_error(omega, eta1, delta, T0, lam1, lam2, lam3, M_moll=60, verbose=True):
+def total_error(omega, eta1, delta, T0, lam1, lam2, lam3, M_moll=60, verbose=True, n_sub=N_SUB):
     """Compute all error bounds R2, R3, R4, R5 (with R1 = 0) and return (R_total, parts_dict)."""
     require(lam1 >= 0 and lam2 >= 0 and lam3 >= 0, "convex weights lam_i must be >= 0")
     require((lam1 + lam2 + lam3).contains(1), "lam1 + lam2 + lam3 must enclose 1")
     eta0 = eta1 + delta
     r2 = bound_R2(omega, eta0)
     r3 = bound_R3(omega, eta0)
-    r4_env = bound_R4_envelope(omega, eta1, T0, lam1, lam2, lam3)
-    r4_st = bound_R4_stieltjes(omega, eta1, T0, lam1, lam2, lam3)
+    r4_env = bound_R4_envelope(omega, eta1, T0, lam1, lam2, lam3, n_sub=n_sub)
+    r4_st = bound_R4_stieltjes(omega, eta1, T0, lam1, lam2, lam3, n_sub=n_sub)
     r4 = r4_st if r4_st < r4_env else r4_env
     r5 = bound_R5(omega, eta0, delta, M_moll=M_moll)
     r_tot = (r2 + r3 + r4 + r5).upper()

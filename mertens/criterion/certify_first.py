@@ -29,7 +29,7 @@ from flint import acb, arb
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "certification"))
 from certio import CertificationError, ball, exact_int, fail, provenance, require
-from error_bounds import A_PT, bound_R4_envelope, bound_R4_stieltjes
+from error_bounds import A_PT, N_SUB, bound_R4_envelope, bound_R4_stieltjes
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(HERE))   # skewes_bound/
@@ -90,12 +90,20 @@ def low_job(args):
     return summarise(gs, P)
 
 
+def load_zero_batch(path):
+    """Zero balls hi + lo +/- rad from an Arb batch file z_{n0}.npz, with the file checked for shape and finiteness."""
+    with np.load(path, allow_pickle=False) as z:
+        hi, lo, rad = z["hi"].copy(), z["lo"].copy(), z["rad"].copy()
+    require(hi.ndim == 1 and 0 < len(hi) <= BATCH and hi.shape == lo.shape == rad.shape, f"{path}: malformed zero batch")
+    require(bool(np.all(np.isfinite(hi)) and np.all(np.isfinite(lo)) and np.all(np.isfinite(rad)) and np.all(rad >= 0)),
+            f"{path}: non-finite entries or negative radii")
+    return [arb(float(h)) + arb(float(l)) + arb(0, float(r)) for h, l, r in zip(hi, lo, rad)]
+
+
 def high_job(args):
     path, P = args
     flint.ctx.dps = DPS
-    z = np.load(path)
-    gs = [arb(float(h)) + arb(float(l)) + arb(0, float(r)) for h, l, r in zip(z["hi"], z["lo"], z["rad"])]
-    return summarise(gs, P)
+    return summarise(load_zero_batch(path), P)
 
 
 def low_tasks(n_end):
@@ -129,7 +137,7 @@ def main():
     if len(sys.argv) < 7:
         fail(__doc__)
     omega_s, eta1_s, delta_s, M_s, lam_s, T0_s = sys.argv[1:7]
-    workers = int(sys.argv[7]) if len(sys.argv) > 7 else 48
+    workers = int(sys.argv[7]) if len(sys.argv) > 7 else 16
     lam = [int(x) for x in lam_s.split(",")]
     require(len(lam) == 3 and all(x >= 0 for x in lam) and sum(lam) == 100, "LAM must be three percentages summing to 100")
     M = int(M_s)
@@ -137,6 +145,9 @@ def main():
 
     flint.ctx.dps = DPS
     T0 = arb(T0_s)
+    require(M >= 1 and workers >= 1, "M and workers must be positive integers")
+    require(arb(eta1_s) > 0 and arb(delta_s) > 0, "kernel widths must be positive")
+    require(2 * arb.pi() * arb(1).exp() < T0 < A_PT, "require 2 pi e < T0 < A")
     N = exact_int(T0.zeta_nzeros(), "N(T0)")
     nb = acb.zeta_zeros(N, 2)
     require(nb[0].imag < T0 < nb[1].imag, "T0 not strictly between gamma_N and gamma_{N+1}")
@@ -164,8 +175,8 @@ def main():
         S += arb(r[0])
 
     l = [arb(x) / 100 for x in lam]
-    r4_env = bound_R4_envelope(om, e1, T0, *l)
-    r4_st = bound_R4_stieltjes(om, e1, T0, *l)
+    r4_env = bound_R4_envelope(om, e1, T0, *l, n_sub=N_SUB)
+    r4_st = bound_R4_stieltjes(om, e1, T0, *l, n_sub=N_SUB)
     r4 = r4_env if r4_env < r4_st else r4_st
     C_M = arb(4 ** M * math.factorial(M) ** 2) / arb(2 * math.factorial(2 * M))
     rate = (M * arb.pi()) / (A_PT * de)
@@ -179,6 +190,7 @@ def main():
     cert = provenance(P, CODE)
     cert.update({
         "omega": omega_s, "eta1": eta1_s, "delta": delta_s, "M_moll": M, "lam": lam_s, "T0": T0_s, "N_T0": N,
+        "tail_subintervals": N_SUB,
         "S_M": ball(S, 30), "R4_envelope": ball(r4_env, 30), "R4_stieltjes": ball(r4_st, 30),
         "R5": ball(r5, 30), "R_small": ball(r_small, 30),
         "U": ball(U, 30), "U_upper": ball(U.upper(), 30),

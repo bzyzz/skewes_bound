@@ -3,13 +3,15 @@
 Tests for certio.py and error_bounds.py failure modes and outward-rounding guarantees.
 """
 import os
+import random
 import subprocess
 import sys
+from fractions import Fraction
 import flint
 from flint import arb
 
-from certio import CertificationError, ball, exact_int, require
-from error_bounds import kappa_2m_hat_arb, total_error
+from certio import CertificationError, ball, directed_decimal, exact_int, require
+from error_bounds import bound_R4_envelope, bound_R4_stieltjes, kappa_2m_hat_arb, total_error
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -83,6 +85,32 @@ def main():
                         "try:\n require(False, 'boom')\nexcept CertificationError as e:\n fail(str(e))"],
                        capture_output=True, text=True)
     assert r.returncode != 0 and "FAIL: boom" in r.stderr
+
+    # 6. Directed decimal rounding: exact in both directions, for both signs (a nearest-rounded exponent such as
+    #    47.9376 for 47.93760276 is below the bound it stands for)
+    u = arb("110.3804095") / arb(10).log()
+    assert directed_decimal(u, 4, upper=True) == "47.9377" and directed_decimal(u, 4) == "47.9376"
+    assert directed_decimal(arb("-0.00019631"), 6, upper=True) == "-0.000196"
+    assert directed_decimal(arb("-0.00019631"), 6) == "-0.000197"
+    assert directed_decimal(arb("0.5"), 3, upper=True) == "0.500" and directed_decimal(arb(7), 0) == "7"
+    rng = random.Random(1)
+    for _ in range(2000):
+        v = rng.uniform(-50, 50) * 10 ** rng.randint(-12, 3)
+        x = arb(v, abs(v) * rng.choice([0, 1e-9, 1e-3]))
+        places = rng.randint(0, 12)
+        for up in (False, True):
+            got = Fraction(directed_decimal(x, places, upper=up))
+            m, e = (int(t) for t in (x.upper() if up else x.lower()).man_exp())
+            end = Fraction(m) * Fraction(2) ** e
+            assert (0 <= got - end < Fraction(1, 10 ** places)) if up else (0 <= end - got < Fraction(1, 10 ** places))
+    must_fail(lambda: directed_decimal(arb("nan"), 3))
+    must_fail(lambda: ball(arb("inf")))
+
+    # 7. Finer R4 cells only tighten the bound (every cell bound is an upper bound)
+    l = (arb("0.12"), arb("0.70"), arb("0.18"))
+    for f in (bound_R4_envelope, bound_R4_stieltjes):
+        coarse, fine = f(omega, eta1, T0, *l, n_sub=512), f(omega, eta1, T0, *l, n_sub=4096)
+        assert fine < coarse, f"{f.__name__}: finer cells did not tighten the bound"
 
     print("test_certio.py: ALL TESTS PASSED.")
 

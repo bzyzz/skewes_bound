@@ -17,8 +17,8 @@
  "code_sha256": {
   "arb_recert.py": "1c1bb3e59478bbbe1748b254452ca1cb3491638801935df313eb1b8cd2807308",
   "arb_combine.py": "a8e7a0cbd8415eaf92763b19a9aba655e7fe4872e4bf807f10fd76ddc030e9ab",
-  "certio.py": "6eda1454be4706f7b0585b00094d3d6fdfc9e598dd73801a0d8a9c126995a989",
-  "error_bounds.py": "272ef66ec8fb4886691f80b9ec55d7e8a8bf828643e891721acc74609d1c1e1f"
+  "certio.py": "ae776ff19de75cacfbc2a50254f82fcf4995b07f79e43ef2df3ba41f71cc3fe7",
+  "error_bounds.py": "5bbc55f0cef03ab6e80c696f88b63c2cd2a108e17a116bd054e307928638b3c0"
  },
  "omega": "727.951335441",
  "eta1": "1.50e-7",

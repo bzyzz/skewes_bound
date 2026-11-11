@@ -5,6 +5,8 @@ import math, sys
 import numpy as np
 from flint import arb
 X = int(float(sys.argv[1])); Dmax = int(sys.argv[2]); EG = float(arb.const_euler().mid())
+if X <= 2:
+    raise ValueError("X must exceed 2 for logarithmic density on [2, X]")
 sieve = np.ones(X + 1, dtype=bool); sieve[:2] = False
 for i in range(2, int(X**0.5) + 1):
     if sieve[i]: sieve[i*i::i] = False
@@ -52,15 +54,20 @@ for D in [d for d in range(-Dmax, Dmax + 1) if fundamental(d)]:
     norms = np.concatenate([split, inert**2, ram]); mult = np.concatenate([2*np.ones(len(split)), np.ones(len(inert)), np.ones(len(ram))])
     o = np.argsort(norms, kind="stable"); norms, mult = norms[o], mult[o]
     S = np.cumsum(-mult*np.log1p(-1/norms))
+    # Include the empty-product interval before the first prime-ideal norm.
+    if len(norms) == 0 or norms[0] > 2:
+        norms = np.insert(norms, 0, 2)
+        S = np.insert(S, 0, 0.0)
     thr = np.exp(np.exp(S - EG - math.log(L1)))           # within [norm_k, norm_{k+1}), Delta < 0 iff x > thr
     nxt = np.append(norms[1:], X + 1.0)
-    negk = np.nonzero(thr < nxt - 1e-9)[0]
-    # first integer x >= max(norm_k, ceil(thr)) and < next norm
+    negk = np.nonzero(thr < nxt - 1)[0]
+    # Strict negativity requires an integer strictly above the threshold.
     first = None
     for k in negk:
-        xi = max(math.ceil(thr[k]), int(norms[k]))
+        xi = max(math.floor(thr[k]) + 1, int(norms[k]))
         if xi < nxt[k]: first = xi; break
-    lo = np.maximum(thr, norms); dens = np.sum(np.where(nxt > lo, np.log(np.minimum(nxt, X)) - np.log(lo), 0))/math.log(X/2)
+    lo = np.maximum(thr, norms); hi = np.minimum(nxt, X)
+    dens = np.sum(np.where(hi > lo, np.log(hi) - np.log(lo), 0))/math.log(X/2)
     out.append((D, first, dens, L1))
     print(f"D={D:5d} kappa={L1:.4f} first negative integer x: {first if first else '> %.0e' % X:>10}  negativity log-density {dens:.4f}", flush=True)
 none = [r for r in out if r[1] is None]

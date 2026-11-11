@@ -57,10 +57,13 @@ for D in [d for d in range(-Dmax, Dmax + 1) if fundamental(d)]:
             if N <= n: prod *= 1/(1 - arb(1)/N)
         val = prod - eg*kappa*arb(n).log()
         if val < 0: first = n; break
-        assert val > 0, f"sign of Delta_K({n}) not certified for D={D}"
-    assert first is not None, f"no negative value up to {NMAX} for D={D}"
+        if not val > 0:
+            raise ArithmeticError(f"sign of Delta_K({n}) not certified for D={D}")
+    if first is None:
+        raise ArithmeticError(f"no negative value up to {NMAX} for D={D}")
     out[D] = first
-json.dump(out, open("fields_first_negative.json", "w"), indent=0)
+with open("fields_first_negative.json", "w", encoding="utf-8") as handle:
+    json.dump(out, handle, indent=0)
 vals = sorted(out.items(), key=lambda kv: -kv[1])
 print(f"{len(out)} fields, all certified in Arb; max first negative x = {vals[0][1]} (D = {[d for d, v in vals if v == vals[0][1]]})")
 print("D=5:", out[5], " D=13:", out[13], " D=-4:", out[-4], " D=-3:", out[-3], " D=8:", out[8])

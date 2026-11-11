@@ -80,7 +80,7 @@ theorem team8 (Z : ℝ → ℝ) (ε₀ S R₃ R₄ R₅ : ℝ)
     (hR4 : R₄ ≤ 1020613101 / 10 ^ 12 + 281 / 10 ^ 15)
     (hR5 : R₅ ≤ 3518406877 / 10 ^ 17 + 474 / 10 ^ 20)
     (hε : ε₀ ≤ 1067077596 / 10 ^ 13 + 246 / 10 ^ 16) :
-    ∃ x : ℝ, log x ∈ Icc (64764452 / 10 ^ 6) (64764772 / 10 ^ 6) ∧
+    ∃ x : ℝ, 0 < x ∧ log x ∈ Icc (64764452 / 10 ^ 6) (64764772 / 10 ^ 6) ∧
       (piMod 8 3 x + piMod 8 5 x + piMod 8 7 x) / 3 < piMod 8 1 x ∧
       x < (10 : ℝ) ^ (281270 / 10000 : ℝ) := by
   have hlo : 0 < ω8 - P8.η₀ := by simp only [KParams.η₀, P8, ω8]; norm_num
@@ -88,7 +88,7 @@ theorem team8 (Z : ℝ → ℝ) (ε₀ S R₃ R₄ R₅ : ℝ)
     simp only [KParams.η₀, P8, ω8, Phi]; norm_num
   obtain ⟨u, hu, hpos⟩ := criterion P8 ω8 hlo 8 3 5 7 Z ε₀ _ hExpl hZint hZ (by linarith)
   rw [window8] at hu
-  refine ⟨exp u, by rw [log_exp]; exact hu, ?_, ?_⟩
+  refine ⟨exp u, exp_pos u, by rw [log_exp]; exact hu, ?_, ?_⟩
   · have hu0 : 0 < u * exp (-(u / 2)) := mul_pos (lt_of_lt_of_le (by norm_num) hu.1) (exp_pos _)
     unfold G at hpos
     have := (pos_iff_pos_of_mul_pos hpos).mp hu0
@@ -128,7 +128,7 @@ theorem team12 (Z : ℝ → ℝ) (ε₀ S R₃ R₄ R₅ : ℝ)
     (hR4 : R₄ ≤ 9440472439 / 10 ^ 13 + 611 / 10 ^ 17)
     (hR5 : R₅ ≤ 4963374721 / 10 ^ 16 + 723 / 10 ^ 21)
     (hε : ε₀ ≤ 1357142235 / 10 ^ 33 + 479 / 10 ^ 36) :
-    ∃ x : ℝ, log x ∈ Icc (339631918 / 10 ^ 6) (339632698 / 10 ^ 6) ∧
+    ∃ x : ℝ, 0 < x ∧ log x ∈ Icc (339631918 / 10 ^ 6) (339632698 / 10 ^ 6) ∧
       (piMod 12 5 x + piMod 12 7 x + piMod 12 11 x) / 3 < piMod 12 1 x ∧
       x < (10 : ℝ) ^ (1475007 / 10000 : ℝ) := by
   have hlo : 0 < ω12 - P12.η₀ := by simp only [KParams.η₀, P12, ω12]; norm_num
@@ -136,7 +136,7 @@ theorem team12 (Z : ℝ → ℝ) (ε₀ S R₃ R₄ R₅ : ℝ)
     simp only [KParams.η₀, P12, ω12, Phi]; norm_num
   obtain ⟨u, hu, hpos⟩ := criterion P12 ω12 hlo 12 5 7 11 Z ε₀ _ hExpl hZint hZ (by linarith)
   rw [window12] at hu
-  refine ⟨exp u, by rw [log_exp]; exact hu, ?_, ?_⟩
+  refine ⟨exp u, exp_pos u, by rw [log_exp]; exact hu, ?_, ?_⟩
   · have hu0 : 0 < u * exp (-(u / 2)) := mul_pos (lt_of_lt_of_le (by norm_num) hu.1) (exp_pos _)
     unfold G at hpos
     have := (pos_iff_pos_of_mul_pos hpos).mp hu0

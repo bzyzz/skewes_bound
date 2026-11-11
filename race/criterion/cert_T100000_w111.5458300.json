@@ -48,5 +48,19 @@
  "certified": true,
  "u_lo": "[111.545633800000 +/- 3e-17]",
  "u_hi": "[111.546026200000 +/- 3e-17]",
- "bound_log10": 48.44382365689555
+ "bound_log10": "48.4439",
+ "input_sha256": {
+  "3.2/certified.npz": "f182ad4c0febd88bdfcbb76027a50d41d3445133a4a0504d840f49d6c2241e00",
+  "3.2/turing_3_2.json": "819238d7f0294007ae128d47342a24ca42a50ea2bd358c64b3b48d5c393c4c24",
+  "3.2/endpoints_3_2.json": "3f21b199c40c08a650f4c5647cce1f858f1dd7bfcc86fe56e7b0a5b0bf32a3db",
+  "4.3/certified.npz": "fb584a38476319a7623a96d07eecb3ed144fb29d705096a1d69489e05ec15140",
+  "4.3/turing_4_3.json": "a9ddc3654f7e31df21541a21870334289b9e0333ba99df1579cf7877561d23da",
+  "4.3/endpoints_4_3.json": "d36a4f152565b4b1f9b6939d5c4573467a97ad4b54d758ac542d74a9f072e52b",
+  "8.5/certified.npz": "af5d98fe82cf374a97286c8c399fdda41f784e090b9ecc8e9b3703e11ab2a251",
+  "8.5/turing_8_5.json": "30dcebcee694b00cac166303760a918fd6ec692c4d3a6ecf532d262bf7733451",
+  "8.5/endpoints_8_5.json": "d8a1e588e30de373296d5c172ecef809dc1d0e6874987e24ddc7b33c0876760b",
+  "24.11/certified.npz": "f4a6f1eaffe9227dee6ca224e57b791ac2b801093c15952b241d0eefb290054f",
+  "24.11/turing_24_11.json": "62814545500edab036dd71792ece926798becc5ebd29f020e6e51cf05b7e8e5b",
+  "24.11/endpoints_24_11.json": "966c621da8f3fd1f8cfe4bf5a97c8328e79e5bc25de6ce66c75f7013b2612473"
+ }
 }

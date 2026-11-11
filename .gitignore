@@ -27,6 +27,7 @@ paper/
 # Prime race: regenerable float zeros, per-chunk Arb caches, run logs, heuristic float zeros
 race/data/float_*.npy
 race/data/arb_*/chunk_*.npz
+race/data/arb_*/endpoint_chunks_*/
 race/data/*.log
 race/heuristics/zeros/
 race/lit/
@@ -46,3 +47,6 @@ mertens/**/*.log
 census/count_races
 census/*.log
 census/zeros/
+
+# Collaborator review packages (not part of the code release)
+*-collaborator-*.zip

@@ -32,7 +32,7 @@ import flint
 from flint import acb, arb
 
 from certio import CertificationError, ball, exact_int, fail, provenance, require
-from error_bounds import A_PT, bound_R4_envelope, bound_R4_stieltjes
+from error_bounds import A_PT, N_SUB, bound_R4_envelope, bound_R4_stieltjes
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -67,18 +67,25 @@ def partial_sum(gs, P):
     om, e1, de, T0 = arb(P["omega"]), arb(P["eta1"]), arb(P["delta"]), arb(P["T0"])
     l = [arb(x) / 100 for x in P["lam"]]
     tot = arb(0)
+    used = 0
     for g in gs:
         if g > T0:
             break
         require(not g.overlaps(T0), "a zero ball overlaps T0")
         w = (l[0] * khat(e1 * g, 1) + l[1] * khat(e1 * g, 2) + l[2] * khat(e1 * g, 3)) * khat(de * g, P["M"])
         tot += -2 * w * (acb(0, g * om).exp() / acb(arb("0.5"), g)).real
-    return tot
+        used += 1
+    # the zeros are increasing, so everything after the first ball above T0 must also be above T0
+    require(all(g > T0 for g in gs[used:]), "a zero ball above the cut-off is not certified above T0")
+    return tot, used
 
 
 def summarise(gs, P):
+    """(sum over the zeros <= T0, first ball, last ball, number loaded, number summed, last summed ball)."""
+    require(len(gs) > 0 and all(g.is_finite() and g > 0 for g in gs), "empty batch or non-finite / non-positive zero ball")
     require(all(a < b for a, b in zip(gs, gs[1:])), "zeros not strictly increasing within a batch")
-    return (ball(partial_sum(gs, P), 40), gs[0].str(30, radius=True), gs[-1].str(30, radius=True), len(gs))
+    tot, used = partial_sum(gs, P)
+    return (ball(tot, 40), ball(gs[0], 30), ball(gs[-1], 30), len(gs), used, ball(gs[used - 1], 30) if used else None)
 
 
 def low_job(args):
@@ -95,10 +102,16 @@ def low_job(args):
 
 
 def high_job(args):
-    path, P = args
+    path, need, P = args
     flint.ctx.dps = DPS
-    z = np.load(path)
-    gs = [arb(float(h)) + arb(float(l)) + arb(0, float(r)) for h, l, r in zip(z["hi"], z["lo"], z["rad"])]
+    with np.load(path, allow_pickle=False) as z:
+        hi, lo, rad = z["hi"].copy(), z["lo"].copy(), z["rad"].copy()
+    require(hi.ndim == 1 and hi.shape == lo.shape == rad.shape, f"{path}: malformed zero batch")
+    require(bool(np.all(np.isfinite(hi)) and np.all(np.isfinite(lo)) and np.all(np.isfinite(rad)) and np.all(rad >= 0)),
+            f"{path}: non-finite entries or negative radii")
+    # the file z_{n0}.npz must hold the zeros n0, ..., n0 + BATCH - 1 (the last file needed may hold fewer)
+    require(len(hi) == BATCH if need is None else need <= len(hi) <= BATCH, f"{path}: unexpected number of zeros {len(hi)}")
+    gs = [arb(float(h)) + arb(float(l)) + arb(0, float(r)) for h, l, r in zip(hi, lo, rad)]
     return summarise(gs, P)
 
 
@@ -124,7 +137,8 @@ def high_tasks(n_end):
     while cur <= n_end:
         p = os.path.join(ARB_ZERO_DIR, f"z_{cur:09d}.npz")
         require(os.path.exists(p), f"missing Arb zero batch {p}")
-        out.append(p)
+        # every file but the last must be full; the last must reach the zero n_end
+        out.append((p, None if cur + BATCH <= n_end else n_end + 1 - cur))
         cur += BATCH
     return out
 
@@ -133,7 +147,8 @@ def main():
     if len(sys.argv) < 7:
         fail(__doc__)
     omega_s, eta1_s, delta_s, M_s, lam_s, T0_s = sys.argv[1:7]
-    workers = int(sys.argv[7]) if len(sys.argv) > 7 else 48
+    workers = int(sys.argv[7]) if len(sys.argv) > 7 else 16
+    require(workers >= 1, "workers must be positive")
     lam = [int(x) for x in lam_s.split(",")]
     require(len(lam) == 3 and all(x >= 0 for x in lam) and sum(lam) == 100, "LAM must be three percentages summing to 100")
     M = int(M_s)
@@ -157,33 +172,45 @@ def main():
     ht = high_tasks(N) if N > N_LOW else []
     with Pool(workers) as pool:
         res = pool.map(low_job, [(p, k, P) for p, k in lt], chunksize=4)
-        res += pool.map(high_job, [(p, P) for p in ht], chunksize=4)
+        res += pool.map(high_job, [(p, need, P) for p, need in ht], chunksize=4)
 
     flint.ctx.dps = DPS
     for a, b in zip(res, res[1:]):
         require(arb(a[2]) < arb(b[1]), "zero batches not increasing across a boundary")
+    # Completeness (consumer side). The batches are consecutive and increasing, so the summed zeros are the first
+    # sum(r[4]) of them. This must equal N(T0) exactly, and the last summed ball must be the zero gamma_N that Arb
+    # isolates independently here; a missing, truncated or repeated batch fails one of these checks.
     require(sum(r[3] for r in res) >= N, "fewer zeros loaded than N(T0)")
+    n_used = sum(r[4] for r in res)
+    require(n_used == N, f"summed {n_used} zeros, but N(T0) = {N}")
+    k_last = max(i for i, r in enumerate(res) if r[4] > 0)
+    require(all(r[4] == r[3] for r in res[:k_last]) and all(r[4] == 0 for r in res[k_last + 1:]),
+            "the summed zeros are not an initial segment of the batches")
+    require(arb(res[k_last][5]).overlaps(nb[0].imag), "the last summed zero is not gamma_N")
+    require(arb(res[0][1]).overlaps(acb.zeta_zeros(1, 1)[0].imag), "the first zero is not gamma_1")
     S = arb(0)
     for r in res:
         S += arb(r[0])
 
     l = [arb(x) / 100 for x in lam]
-    r4_env = bound_R4_envelope(om, e1, T0, *l)
-    r4_st = bound_R4_stieltjes(om, e1, T0, *l)
+    r4_env = bound_R4_envelope(om, e1, T0, *l, n_sub=N_SUB)
+    r4_st = bound_R4_stieltjes(om, e1, T0, *l, n_sub=N_SUB)
     C_M = arb(4 ** M * math.factorial(M) ** 2) / arb(2 * math.factorial(2 * M))
     rate = (M * arb.pi()) / (A_PT * de)
     require(rate < 1, "R5 rate must be < 1")
     r5 = (4 * C_M * A_PT.log() * (u_hi / 2).exp() * rate ** (2 * M)).upper()
     r3 = ((-u_lo / 2).exp() * (2 * arb.pi()).log() + 3 * (-u_lo / 6).exp()).upper()
-    base = -1 - arb("1.5423e-9") + S - r3 - r5
-    I_env, I_st = (base - r4_env).lower(), (base - r4_st).lower()
+    # Serialise the budget first and take both margins from the strings that are written, so that a reader of the
+    # certificate who recomputes the margin from its entries gets the same decision.
+    saved = {"S_theta": ball(S, 30), "R3_theta": ball(r3, 30), "R4_envelope": ball(r4_env, 30),
+             "R4_stieltjes": ball(r4_st, 30), "R5_theta": ball(r5, 30)}
+    base = -1 - arb("1.5423e-9") + arb(saved["S_theta"]) - arb(saved["R3_theta"]) - arb(saved["R5_theta"])
+    I_env, I_st = (base - arb(saved["R4_envelope"])).lower(), (base - arb(saved["R4_stieltjes"])).lower()
 
     cert = provenance(P, CODE)
     cert.update({
         "omega": omega_s, "eta1": eta1_s, "delta": delta_s, "M_moll": M, "lam": lam_s, "T0": T0_s, "N_T0": N,
-        "S_theta": ball(S, 30), "R3_theta": ball(r3, 30),
-        "R4_envelope": ball(r4_env, 30), "R4_stieltjes": ball(r4_st, 30),
-        "R5_theta": ball(r5, 30),
+        "N_summed": n_used, "tail_subintervals": N_SUB, **saved,
         "I_lower_envelope": ball(I_env, 30), "I_lower_stieltjes": ball(I_st, 30),
         "u_lo": ball(u_lo.lower(), 30), "u_hi": ball(u_hi.upper(), 30),
         "elapsed_s": round(time.time() - t0, 1),

@@ -8,7 +8,7 @@ Independent review (2026-10-26): no error affecting L > 0.
 - Its independent float recomputation gives L ≈ 0.1390 (mod 8) and 0.1286 (mod 12).
 - It spot-checked the new zeros with its own evaluation of Z.
 - One fix was made: the decimal bounds in the statement had been rounded down; they now read 10^{68.8976} and 10^{147.5007}.
-- Novelty check done: Bays–Ford–Hudson–Rubinstein (2001) located the mod-8 region heuristically, without a certificate (see below). Dusart: our main terms also follow from Axler's open-access Theorem 2 for log x in [60, 800] (see `../THEOREM.md` (D)).
+- Prior work: Bays–Ford–Hudson–Rubinstein (2001) located the mod-8 region heuristically, without a certificate (see below). Ford–Hudson (2001), eq. (3.4), proved the mod-8 inequality for some x with |log x − 158.64233| ≤ 0.01, that is, for some x < e^158.65233 < 10^68.9019. So the mod-8 result is an improvement of a known bound, not the first one. We know of no earlier explicit bound for mod 12. Dusart: our main terms also follow from Axler's open-access Theorem 2 for log x in [60, 800] (see `../THEOREM.md` (D)).
 
 ## Statement
 

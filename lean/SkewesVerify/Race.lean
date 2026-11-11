@@ -75,7 +75,7 @@ theorem race (Z : ℝ → ℝ) (ε₀ S R₃ R₄ R₅ : ℝ)
     (hR4 : R₄ ≤ 1130541581 / 10 ^ 11 + 322 / 10 ^ 14)
     (hR5 : R₅ ≤ 9129669155 / 10 ^ 15 + 262 / 10 ^ 18)
     (hε : ε₀ ≤ 8771848710 / 10 ^ 17 + 455 / 10 ^ 20) :
-    ∃ x : ℝ, log x ∈ Icc (1115456338 / 10 ^ 7) (1115460262 / 10 ^ 7) ∧
+    ∃ x : ℝ, 0 < x ∧ log x ∈ Icc (1115456338 / 10 ^ 7) (1115460262 / 10 ^ 7) ∧
       piMod 24 11 x < piMod 24 1 x ∧ x < (10 : ℝ) ^ (484439 / 10000 : ℝ) := by
   have hU := integral_le Z ε₀ S R₃ R₄ R₅ hZint hZ
   have hΦ : 8 * Phi (ω - P.η₀) < 8148920290 / 10 ^ 9 := by
@@ -83,7 +83,7 @@ theorem race (Z : ℝ → ℝ) (ε₀ S R₃ R₄ R₅ : ℝ)
   obtain ⟨u, hu, hneg⟩ := exists_neg_of_integral_neg (P.measurableSet_window ω)
     (fun u _ => P.K_shift_nonneg ω u) hExpl (by linarith)
   rw [window_eq] at hu
-  refine ⟨exp u, by rw [log_exp]; exact hu, ?_, ?_⟩
+  refine ⟨exp u, exp_pos u, by rw [log_exp]; exact hu, ?_, ?_⟩
   · have hpos : 0 < 8 * u * exp (-(u / 2)) := by
       have : 0 < u := lt_of_lt_of_le (by norm_num) hu.1
       positivity

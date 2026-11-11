@@ -34,12 +34,16 @@ def main():
     ok = bool(L > 0)
     out = dict(q=q, T0=T0, omega=omega_s, eta1=eta1_s, delta=delta_s, M=M, lam=lam_s, chars=per,
                sum_S=S_tot.str(15), errors={k: v.str(10) for k, v in err.items()}, L=L.str(15), certified=ok,
-               u_lo=u_lo.str(15), u_hi=u_hi.str(15), bound_log10=float((u_hi/arb(10).log()).upper()) if ok else None)
+               u_lo=u_lo.str(15), u_hi=u_hi.str(15), bound_log10=rcert.decimal_ceiling(u_hi/arb(10).log()) if ok else None,
+               input_sha256=rcert.input_manifest(cfg["chars"]))
     json.dump(out, open(os.path.join(HERE, f"team_cert_q{q}_T{int(T0)}_w{omega_s}.json"), "w"), indent=1)
     print(json.dumps(out, indent=1))
     if ok:
         print(f"CERTIFIED: pi(x;{q},1) exceeds the average of the other classes for some x with log x in [{out['u_lo']}, {out['u_hi']}]; "
-              f"first such x < 10^{out['bound_log10']:.4f}")
+              f"first such x < 10^{out['bound_log10']}")
+
+    if not ok:
+        raise SystemExit(1)
 
 if __name__ == "__main__":
     main()

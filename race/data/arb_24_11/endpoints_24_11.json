@@ -1,0 +1,22 @@
+{
+ "schema": 1,
+ "q": 24,
+ "n": 11,
+ "count": 188853,
+ "dps": 30,
+ "input_sha256": "f4a6f1eaffe9227dee6ca224e57b791ac2b801093c15952b241d0eefb290054f",
+ "code_sha256": "cf807791986da9a2f31f2e08cc26e3eb82436bc79d27df86d3928c81191c2c26",
+ "python_flint": "0.9.0",
+ "t_min": 2.6886581224675887,
+ "t_max": 100099.92717520673,
+ "max_width": 2.0001607481390238e-08,
+ "order_ok": true,
+ "sign_changes": 188853,
+ "failures": [],
+ "n_failures": 0,
+ "min_abs_Z_at_endpoints": 1.8068769981241917e-09,
+ "signs_sha256": "c6499427632e53fbce6c5cc7570e12713c5f7f669be61ea75169789448ed165e",
+ "consecutive_signs_agree": true,
+ "all_ok": true,
+ "seconds": 3098
+}

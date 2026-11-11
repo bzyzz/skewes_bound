@@ -3,6 +3,8 @@ import math, sys
 import numpy as np
 from flint import acb, dirichlet_char
 X = int(float(sys.argv[1])); EG = 0.5772156649015329
+if X <= 2:
+    raise ValueError("X must exceed 2 for logarithmic density on [2, X]")
 sieve = np.ones(X + 1, dtype=bool); sieve[:2] = False
 for i in range(2, int(X**0.5) + 1):
     if sieve[i]: sieve[i*i::i] = False
@@ -16,17 +18,24 @@ for name, q, n in [("Q(sqrt 5)", 5, 4), ("Q(sqrt 13)", 13, 12)]:
     mult = np.concatenate([2*np.ones(len(split)), np.ones(len(inert)), np.ones(len(ram))])
     o = np.argsort(norms, kind="stable"); norms, mult = norms[o], mult[o]
     S = np.cumsum(-mult*np.log1p(-1/norms.astype(np.float64)))
+    # Include the empty-product interval before the first prime-ideal norm.
+    if len(norms) == 0 or norms[0] > 2:
+        norms = np.insert(norms, 0, 2)
+        S = np.insert(S, 0, 0.0)
     # integer x in [norms[k], norms[k+1]-1]: E3 decreasing, so the worst integer is norms[k+1]-1
     nxt = np.append(norms[1:], X + 1) - 1
     E3 = S - EG - math.log(kappa) - np.log(np.log(nxt.astype(np.float64)))
     neg = np.nonzero(E3 < 0)[0]
     # first integer x with E3 < 0: within [norms[k], nxt[k]], solve log log x > S_k - EG - log kappa
-    k = neg[0]; xs = math.ceil(math.exp(math.exp(S[k] - EG - math.log(kappa))))
-    xs = max(xs, int(norms[k]))
+    xs = None
+    if len(neg):
+        k = neg[0]
+        xs = max(math.floor(math.exp(math.exp(S[k] - EG - math.log(kappa)))) + 1, int(norms[k]))
     # log-density of {x <= X: Delta_K(x) < 0}: measure in log x of the negative parts
     thr = np.exp(np.exp(S - EG - math.log(kappa)))             # E3 < 0 for x > thr within [norms[k], next norm)
     lo = np.maximum(thr, norms.astype(np.float64)); hi = np.append(norms[1:], X).astype(np.float64)
     meas = np.sum(np.where(hi > lo, np.log(hi) - np.log(np.maximum(lo, 1)), 0.0))
     dens = meas/ (math.log(X) - math.log(2))
-    print(f"{name}: first integer x with Delta_K(x) < 0: x = {xs}; last negative interval below {X:.0e} ends at {nxt[neg[-1]]}; "
+    last = int(nxt[neg[-1]]) if len(neg) else None
+    print(f"{name}: first integer x with Delta_K(x) < 0: x = {xs}; last negative integer below {X:.0e}: {last}; "
           f"log-density of negativity on [2, {X:.0e}] = {dens:.4f}", flush=True)

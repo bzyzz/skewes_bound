@@ -52,7 +52,7 @@ for c in [12, 14, 16, 20, 24]:
         w0 = f(gb); w1 = (f(gb + 1) - f(gb - 1))/2; w2 = f(gb + 1) - 2*w0 + f(gb - 1)
         S = evaluate(w0, w1, w2)
         la = [arb(l)/100 for l in lam]
-        r4 = min(float(eb.bound_R4_envelope(arb(U_REF), arb(eta1), arb(T0), *la).mid()), float(eb.bound_R4_stieltjes(arb(U_REF), arb(eta1), arb(T0), *la).mid()))
+        r4 = min(float(eb.bound_R4_envelope(arb(U_REF), arb(eta1), arb(T0), *la, n_sub=8192).mid()), float(eb.bound_R4_stieltjes(arb(U_REF), arb(eta1), arb(T0), *la, n_sub=8192).mid()))
         U = 1 + S + r4
         ok = np.nonzero(U < -margin)[0]
         line = f"c={c} lam={lam}: min U={U.min():+.6f} at u={u[U.argmin()]:.10f}; R4={r4:.2e}"

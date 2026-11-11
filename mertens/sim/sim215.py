@@ -66,7 +66,7 @@ T0S = [8e7, 2e8, 5e8, 1e9, 3e9, 1e10, 3e10]; CS = [12, 16, 24]
 configs = [(T0, c) for T0 in T0S for c in CS]
 R4 = {}
 for T0, c in configs:
-    R4[(T0, c)] = float(eb.bound_R4(arb(U_REF), arb(c)/arb(T0), arb(T0), *[arb(x) for x in ("0.04", "0.52", "0.44")]).mid())
+    R4[(T0, c)] = float(eb.bound_R4(arb(U_REF), arb(c)/arb(T0), arb(T0), *[arb(x) for x in ("0.04", "0.52", "0.44")], n_sub=8192).mid())
 
 cache = os.path.join(HERE, "meas_495.npz")
 if os.path.exists(cache):

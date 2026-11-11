@@ -34,8 +34,23 @@ CHARS = [(3, 2, 1, arb("3.3e7"), 1), (4, 3, 1, arb("2.5e7"), 1), (8, 5, 0, arb("
 
 # ---------------- kernel ----------------
 def kap_hat(xi, m):
-    """hat kappa_{2m}(xi) in Arb, xi a real ball (removable singularities handled by Arb sinc)."""
+    """hat kappa_{2m}(xi) in Arb, xi a real ball. Away from the points k pi (1 <= k <= m) this is the product
+    sinc(xi) prod_k (k pi)^2/((k pi)^2 - xi^2). If the ball meets one of these removable singularities, use instead
+    hat kappa_{2m}(xi) = sinc(xi) + sum_k C(2m, m-k)/C(2m, m) (sinc(xi + k pi) + sinc(xi - k pi)),
+    which is the transform of cos^{2m}(pi x/2) = 4^{-m} (C(2m,m) + 2 sum_k C(2m,m-k) cos(k pi x)) on [-1, 1]."""
     pi = arb.pi()
+    if m > 60:
+        # prod_{k<=m} (1 - x^2/k^2) = sin(pi x)/(pi x) * Gamma(m+1-x) Gamma(m+1+x)/Gamma(m+1)^2 with x = xi/pi, so
+        # hat kappa_{2m}(xi) = Gamma(m+1)^2 rgamma(m+1+x) rgamma(m+1-x): exact, entire in xi (rgamma = 1/Gamma has no
+        # poles) and O(1) for any m. Used for the high-order mollifiers (m = M of several thousand).
+        x = xi/pi
+        g = arb(m + 1).lgamma()
+        return (2*g).exp()*(m + 1 + x).rgamma()*(m + 1 - x).rgamma()
+    xx = xi*xi
+    if any(((k*pi)**2 - xx).contains(0) for k in range(1, m + 1)):
+        base = math.comb(2*m, m)
+        return xi.sinc() + sum((arb(math.comb(2*m, m - k))/base)*((xi + k*pi).sinc() + (xi - k*pi).sinc())
+                               for k in range(1, m + 1))
     r = xi.sinc()
     for k in range(1, m + 1):
         kp2 = (k*pi)**2

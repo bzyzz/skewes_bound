@@ -1,0 +1,22 @@
+{
+ "zero_cache_low": {
+  "files": 15429,
+  "bytes": 590304416,
+  "list_sha256": "7bc34c234255bc37e97f8db4531d977a2c08f4e396d33bcaf2d256cb1e4613e3"
+ },
+ "zero_cache_ext": {
+  "files": 5815,
+  "bytes": 388859239,
+  "list_sha256": "c5c20c72844021d9f1dedb29dcd6cf3394439e71b002fea9fa6744df14fd14be"
+ },
+ "zero_cache_arb": {
+  "files": 90806,
+  "bytes": 4425112056,
+  "list_sha256": "d37466ffcb156a4109541e311e00cddb6689b051699891dd5f0e19d900aa1545"
+ },
+ "arb_batches": {
+  "files": 105924,
+  "bytes": 32348237,
+  "list_sha256": "df7210cd07ac092e8f68c16f4f2ec9f491996681841600503ab27e9bef509f3a"
+ }
+}

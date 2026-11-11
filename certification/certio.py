@@ -2,8 +2,10 @@
 certio.py -- shared helpers for the Skewes bound certification scripts.
 
 * Outward-safe serialisation: every certified quantity is written as an Arb ball string
-  (``x.str(n, radius=True)``), which Arb guarantees to enclose the ball, and read back with
+  (``x.str(n, radius=True, more=True)``), checked to enclose the ball, and read back with
   ``arb(s)``; directed endpoints are taken after reading (``.lower()``, ``.upper()``).
+* ``directed_decimal`` rounds an endpoint down or up to a decimal grid in exact integer arithmetic; every
+  decimal bound that is stated as a bound goes through it.
 * ``exact_int`` turns an Arb ball into an integer only if the ball contains exactly one.
 * ``require`` / ``fail`` stop with a nonzero exit status; they are not ``assert`` statements,
   so they also run under ``python -O``.
@@ -63,15 +65,40 @@ def provenance(params, code_paths):
 def ball(x, digits=30):
     """Ball string that encloses x, with all `digits` midpoint digits kept (more=True). Without more=True Arb drops
     the midpoint digits below the radius and widens the printed radius, so a sum read back from the string can be
-    several times wider than the computed one (review item 3)."""
-    return x.str(digits, radius=True, more=True)
+    several times wider than the computed one (review item 3). The enclosure is checked, not assumed."""
+    require(x.is_finite(), "cannot serialise a non-finite ball")
+    s = x.str(digits, radius=True, more=True)
+    require(arb(s).contains(x), "serialised ball does not enclose its input")
+    return s
+
+
+def directed_decimal(x, places, upper=False):
+    """Decimal string with `places` digits after the point that is <= x.lower() (upper=False) or >= x.upper()
+    (upper=True). The endpoint of a ball is an exact binary number m * 2^e; it is rounded to the decimal grid in
+    integer arithmetic, so the direction is exact. Arb's str(n, radius=False) rounds to nearest and must not be
+    used for a stated bound."""
+    require(x.is_finite(), "cannot round a non-finite bound")
+    require(isinstance(places, int) and places >= 0, "places must be a nonnegative integer")
+    m, e = (int(v) for v in (x.upper() if upper else x.lower()).man_exp())
+    num = m * 10 ** places
+    if e >= 0:
+        r = num << e
+    else:
+        den = 1 << -e
+        r = -((-num) // den) if upper else num // den        # ceiling or floor, also for negative numbers
+    if places == 0:
+        return str(r)
+    d = str(abs(r)).rjust(places + 1, "0")
+    return f"{'-' if r < 0 else ''}{d[:-places]}.{d[-places:]}"
 
 
 def exact_int(x, what):
     """The unique integer in the ball x; fails if the ball contains none or several."""
     lo, hi = x.lower().ceil(), x.upper().floor()
     require(lo == hi, f"{what}: ball {x.str(20)} does not determine a unique integer")
-    return int(lo.str(40, radius=False).split(".")[0])
+    n = lo.unique_fmpz()
+    require(n is not None, f"{what}: no unique integer")
+    return int(n)
 
 
 def manifest(payloads):

@@ -10,14 +10,15 @@ the positive-region interval [exp(omega - eta0), exp(omega + eta0)], and the cer
 number of consecutive integers x with pi(x) > li(x).
 """
 import json
+from decimal import Decimal, localcontext
 import os
 import sys
 
 import flint
 from flint import arb
 
-from certio import CertificationError, ball, fail, require
-from error_bounds import phi_weight, total_error
+from certio import CertificationError, ball, directed_decimal, fail, require
+from error_bounds import N_SUB, phi_weight, total_error
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 flint.ctx.dps = 60
@@ -128,9 +129,13 @@ def main():
     print(f"              T0 = {cert['T0']} (N(T0) = {cert['N_T0']:,}), lam = {cert['lam']}, M_moll = {M_moll}")
     print(f"Phi(omega)  : {Phi_om.str(20)}")
     print(f"S_K(omega)  : {S_K.str(20)}")
-    print(f"J_K(omega)  : {J_K.str(15)}  (lower bound from S_K: {J_K_lo.str(12, radius=False)})")
+    print(f"J_K(omega)  : {J_K.str(15)}  (lower bound from S_K: {directed_decimal(J_K_lo, 14)})")
     print("\nError bounds (Arb ball arithmetic):")
-    R_tot, r_parts = total_error(omega, eta1, delta, T0, lam1, lam2, lam3, M_moll=M_moll, verbose=True)
+    require(len(parts_lam) == 3 and all(x >= 0 for x in parts_lam) and q_lam > 0, "lam must be three nonnegative weights")
+    R_tot, r_parts = total_error(omega, eta1, delta, T0, lam1, lam2, lam3, M_moll=M_moll, verbose=False, n_sub=N_SUB)
+    for k in ["R1", "R2", "R3", "R4_envelope", "R4_stieltjes", "R4", "R5", "R_total"]:
+        print(f"  {k:14s} <= {directed_decimal(r_parts[k], 16, upper=True)}")
+    print(f"  (R4 step bounds on {N_SUB} cells)")
 
     I_lower = (J_K_lo - R_tot).lower()
     R_tot_env = (r_parts["R2"] + r_parts["R3"] + r_parts["R4_envelope"] + r_parts["R5"]).upper()
@@ -146,6 +151,8 @@ def main():
     # n = max(floor(x), ceil(A)) is an integer in [A, B] with D(n) > Q - 1, and D(n + y) >= D(n) - y/log n for y >= 0,
     # so pi(m) > li(m) for more than (Q - 1) log A - 1 consecutive integers m >= n.
     consec_ints_lower = ((peak_diff_lower - 1) * u_lo - 1).lower()
+    require(consec_ints_lower > 0, "the margin does not certify a run of integers")
+    require((omega + eta0).exp() - (omega - eta0).exp() > 2, "the window must contain an integer")
 
     (eta_rh_sym, I_rh_sym, err_sym), (eta_rh_one, I_rh_one, err_one) = rh_sharpened_eta(
         omega, eta1, delta, lam1, lam2, lam3, use_I
@@ -156,18 +163,29 @@ def main():
 
     print("\n----------------------------------------------------------------------")
     print("UNCONDITIONAL CONCLUSION (using Platt-Trudgian A = 3*10^12):")
-    print(f"  Margin (envelope)   : I(omega, eta0) >= {I_lower_env.str(10, radius=False)}")
-    print(f"  Margin (Stieltjes)  : I(omega, eta0) >= {I_lower.str(10, radius=False)}")
+    # every number below is rounded in the direction of the claim (directed_decimal), never to nearest
+    print(f"  Margin (envelope)   : I(omega, eta0) >= {directed_decimal(I_lower_env, 12)}")
+    print(f"  Margin (Stieltjes)  : I(omega, eta0) >= {directed_decimal(I_lower, 12)}")
     print(f"  eta0 = eta1 + delta  = {eta0.str(12, radius=False)}")
-    print(f"  Positive interval    : u in [{u_lo.str(15, radius=False)}, {u_hi.str(15, radius=False)}]")
-    print(f"  Upper bound on Xi    : Xi < exp({u_hi.str(15, radius=False)})")
-    print(f"                              = {u_hi.exp().upper().str(12, radius=False)}")
-    print(f"  Max pi(x) - li(x)   >= {peak_diff_lower.str(8, radius=False)}")
-    print(f"  Consecutive integers>= {consec_ints_lower.str(8, radius=False)}")
+    # omega, eta1 and delta are decimal strings, so the window endpoints are exact decimals
+    with localcontext() as ctx:
+        ctx.prec = 100
+        w_lo = Decimal(cert["omega"]) - Decimal(cert["eta1"]) - Decimal(cert["delta"])
+        w_hi = Decimal(cert["omega"]) + Decimal(cert["eta1"]) + Decimal(cert["delta"])
+    require(arb(str(w_lo)).overlaps(omega - eta0) and arb(str(w_hi)).overlaps(omega + eta0), "window endpoints inconsistent")
+    print(f"  Positive interval    : u in [{w_lo:f}, {w_hi:f}]  (exact)")
+    print(f"  Upper bound on Xi    : Xi < exp({w_hi:f})")
+    xi_up = u_hi.exp()
+    e10 = len(directed_decimal(xi_up, 0, upper=True)) - 1
+    print(f"                              < {directed_decimal(xi_up / arb(10) ** e10, 10, upper=True)}e{e10}")
+    q10 = len(directed_decimal(peak_diff_lower, 0)) - 1
+    print(f"  Max pi(x) - li(x)   >= {directed_decimal(peak_diff_lower / arb(10) ** q10, 6)}e{q10}")
+    c10 = len(directed_decimal(consec_ints_lower, 0)) - 1
+    print(f"  Consecutive integers>= {directed_decimal(consec_ints_lower / arb(10) ** c10, 6)}e{c10}")
     print("----------------------------------------------------------------------")
     print("CONDITIONAL CONCLUSION (assuming RH, via Schoenfeld Theorem 9.2):")
-    print(f"  Symmetric interval   : u in [{u_rh_sym_lo.str(15, radius=False)}, {u_rh_sym_hi.str(15, radius=False)}]")
-    print(f"  One-sided upper bnd  : Xi < exp({u_rh_one_hi.str(15, radius=False)})")
+    print(f"  Symmetric interval   : u in [{directed_decimal(u_rh_sym_lo, 12)}, {directed_decimal(u_rh_sym_hi, 12, upper=True)}]")
+    print(f"  One-sided upper bnd  : Xi < exp({directed_decimal(u_rh_one_hi, 12, upper=True)})")
     print("======================================================================")
     print("VERIFICATION PASSED.")
 

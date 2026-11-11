@@ -185,5 +185,8 @@
    "theta_over_pi_T": 171163.14844220356
   }
  ],
- "all_ok": true
+ "all_ok": true,
+ "input_sha256": "1615f3359c94a6080ce54190cb0edbfbea389d6b3b80744d3b73cfeadf8352c3",
+ "code_sha256": "4d70fd64d91979f8638daff8138cd968efbd13e36edc1ab8b0c5cb6c2f235538",
+ "root_isolation": "External premise; this Turing calculation does not recheck endpoints"
 }

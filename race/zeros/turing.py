@@ -22,6 +22,7 @@ multiplicity. S(t) = (1/pi) arg L(1/2+it), by continuous variation along 2 -> 2+
 
 usage: turing.py certified.npz h T1,T2,...   -> prints the results and writes turing_<q>_<n>.json next to the input
 """
+import hashlib
 import json
 import os
 import sys
@@ -112,14 +113,14 @@ def turing_at(theta, dtheta, lo, hi, q, T, h, step=0.05):
 
 def main():
     path, h, Ts = sys.argv[1], float(sys.argv[2]), [float(x) for x in sys.argv[3].split(",")]
-    d = np.load(path)
+    d = np.load(path, allow_pickle=False)
     q, n = int(d["q"]), int(d["n"])
     if len(d["fail"]):
-        print(f"WARNING: {len(d['fail'])} uncertified located zeros; they are not counted in F")
+        raise ValueError("Input contains uncertified intervals")
     lo, hi = d["lo"], d["hi"]
-    good = ~np.isnan(lo)
-    lo, hi = lo[good], hi[good]
-    assert np.all(hi[:-1] < lo[1:]) and np.all(lo < hi)
+    if not (np.all(np.isfinite(lo)) and np.all(np.isfinite(hi)) and np.all(lo > 0)
+            and np.all(hi[:-1] < lo[1:]) and np.all(lo < hi)):
+        raise ValueError("Intervals must be positive, finite, ordered and disjoint")
     chi, theta, dtheta = setup(q, n)
     okL, where = L_positive_on_half_to_two(chi)
     print(f"chi = {q}.{n}: L(sigma) > 0 on [1/2, 2]: {okL}" + ("" if okL else f" (fails near {where})"))
@@ -130,9 +131,16 @@ def main():
         print(f"  T={T:.0f}: " + (f"N(T) = F(T) = {r['F_T']} (theta/pi = {r['theta_over_pi_T']:.2f}); "
               f"Turing lower {r['lower']:.3f} > bound {r['bound']:.3f}" if r.get("ok") else f"FAILED {r}"), flush=True)
     res["all_ok"] = okL and all(r.get("ok") for r in res["checkpoints"])
+    with open(path, "rb") as handle:
+        res["input_sha256"] = hashlib.sha256(handle.read()).hexdigest()
+    with open(__file__, "rb") as handle:
+        res["code_sha256"] = hashlib.sha256(handle.read()).hexdigest()
+    res["root_isolation"] = "External premise; this Turing calculation does not recheck endpoints"
     out = os.path.join(os.path.dirname(path), f"turing_{q}_{n}.json")
     json.dump(res, open(out, "w"), indent=1)
     print("all_ok =", res["all_ok"], "->", out)
+    if not res["all_ok"]:
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

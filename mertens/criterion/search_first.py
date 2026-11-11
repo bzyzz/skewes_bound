@@ -33,7 +33,7 @@ for c in [12, 14, 16, 20]:
         bmin, bu, full = np.empty(nb), np.empty(nb), np.empty(npts); p = lambda v: v.ctypes.data_as(dp)
         lib.scan(*[p(v) for v in arrs], len(g), 0.0, float(uc - half), float(h), npts, blk, p(bmin), p(bu), p(full))
         la = [arb(l)/100 for l in lam]
-        r4 = min(float(eb.bound_R4_envelope(arb(uc), arb(eta1), arb(T0), *la).mid()), float(eb.bound_R4_stieltjes(arb(uc), arb(eta1), arb(T0), *la).mid()))
+        r4 = min(float(eb.bound_R4_envelope(arb(uc), arb(eta1), arb(T0), *la, n_sub=8192).mid()), float(eb.bound_R4_stieltjes(arb(uc), arb(eta1), arb(T0), *la, n_sub=8192).mid()))
         U = 1 + 3*1.5423e-9 + full + r4
         u = uc - half + h*np.arange(npts); ok = np.nonzero(U < -margin)[0]
         if not len(ok): print(f"c={c} lam={lam}: min U={U.min():+.4f}"); continue

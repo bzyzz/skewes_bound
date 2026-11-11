@@ -26,7 +26,7 @@ DATA = os.environ.get("LMFDB_ZETA_DIR", os.path.join(HERE, "data"))   # LMFDB/Pl
 import platt
 from kernel_fast import Mollifier
 from certio import ball, provenance, require, fail, exact_int, CertificationError
-from error_bounds import A_PT, bound_R4_envelope, bound_R4_stieltjes
+from error_bounds import A_PT, N_SUB, bound_R4_envelope, bound_R4_stieltjes
 import certify_first as cf            # zero-cache readers for n <= N_ARB
 
 N_ARB = 195565267
@@ -73,8 +73,7 @@ def job_low(args):
 def job_high(args):
     path, P = args
     flint.ctx.dps = DPS
-    z = np.load(path)
-    gs = [arb(float(h)) + arb(float(lo)) + arb(0, float(r)) for h, lo, r in zip(z["hi"], z["lo"], z["rad"])]
+    gs = cf.load_zero_batch(path)
     return ball(term_sum(gs, P), 40), gs[0].str(30), gs[-1].str(30), len(gs), None, None
 
 
@@ -109,13 +108,16 @@ def main():
     if len(sys.argv) < 8:
         fail(__doc__)
     omega_s, eta1_s, delta_s, M_s, lam_s, T0_s, flist = sys.argv[1:8]
-    workers = int(sys.argv[8]) if len(sys.argv) > 8 else 24
+    workers = int(sys.argv[8]) if len(sys.argv) > 8 else 16
     lam = [int(x) for x in lam_s.split(",")]
     require(len(lam) == 3 and sum(lam) == 100 and min(lam) >= 0, "LAM must be three percentages summing to 100")
     M = int(M_s)
     P = {"omega": omega_s, "eta1": eta1_s, "delta": delta_s, "M": M, "lam": lam, "T0": T0_s}
     flint.ctx.dps = DPS
     om, e1, de, T0 = arb(omega_s), arb(eta1_s), arb(delta_s), arb(T0_s)
+    require(M >= 1 and workers >= 1, "M and workers must be positive integers")
+    require(e1 > 0 and de > 0, "kernel widths must be positive")
+    require(2*arb.pi()*arb(1).exp() < T0 < A_PT, "require 2 pi e < T0 < A")
     eta0 = e1 + de; u_lo, u_hi = om - eta0, om + eta0
     require(u_lo >= 400, "omega - eta0 >= 400 is required")
     require(e1*T0 > 3*arb.pi(), "eta1 T0 > 3 pi is required by the R4 bounds")
@@ -159,7 +161,7 @@ def main():
     require(arb(seams[0]).overlaps(arb(resA[-1][2])), "LMFDB zero #N_ARB does not match our zero #N_ARB")
     S = sum((arb(r[0]) for r in resA), arb(0)) + sum((arb(r[0]) for r in resB), arb(0))
     l = [arb(x)/100 for x in lam]
-    r4_env = bound_R4_envelope(om, e1, T0, *l); r4_st = bound_R4_stieltjes(om, e1, T0, *l)
+    r4_env = bound_R4_envelope(om, e1, T0, *l, n_sub=N_SUB); r4_st = bound_R4_stieltjes(om, e1, T0, *l, n_sub=N_SUB)
     r4 = r4_env if r4_env < r4_st else r4_st
     C_M = arb(4**M*math.factorial(M)**2)/arb(2*math.factorial(2*M))
     rate = (M*arb.pi())/(A_PT*de)
@@ -171,7 +173,7 @@ def main():
     U = 1 + 3*eps + S + r4 + r5 + r_small
     cert = provenance(P, CODE)
     cert.update({"omega": omega_s, "eta1": eta1_s, "delta": delta_s, "M_moll": M, "lam": lam_s, "T0": T0_s,
-                 "N_T0": N, "N_ours": N_ARB, "N_lmfdb": N - N_ARB, "next_zero_above_T0": nxt[1],
+                 "tail_subintervals": N_SUB, "N_T0": N, "N_ours": N_ARB, "N_lmfdb": N - N_ARB, "next_zero_above_T0": nxt[1],
                  "S_M": ball(S, 30), "R4_envelope": ball(r4_env, 30),
                  "R4_stieltjes": ball(r4_st, 30), "R5": ball(r5, 30),
                  "R_small": ball(r_small, 30), "U": ball(U, 30),
@@ -180,8 +182,9 @@ def main():
                  "log10_x_upper": ball((u_hi/arb(10).log()).upper(), 30),
                  "elapsed_s": round(time.time() - t0, 1)})
     print(json.dumps(cert, indent=2))
-    json.dump(cert, open(os.path.join(HERE, f"first_cert_lmfdb_T{T0_s}.json"), "w"), indent=2)
-    require(U < 0, "U is not certified negative")
+    require(U < 0, "U is not certified negative")          # the certificate file is written only on success
+    with open(os.path.join(HERE, f"first_cert_lmfdb_T{T0_s}.json"), "w") as f:
+        json.dump(cert, f, indent=2)
     print(f"CERTIFIED: Delta_1(x) < 0 for some x in [exp({cert['u_lo']}), exp({cert['u_hi']})], so X < 10^{cert['log10_x_upper']}")
 
 
